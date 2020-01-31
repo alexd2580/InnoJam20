@@ -9,6 +9,9 @@ local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
 local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
 local ParticlePositionSyncSystem = require("systems/particle/ParticlePositionSyncSystem")
 
+-- Game Systems
+local AsteroidSpawnSystem = require("systems/game/AsteroidSpawnSystem")
+
 -- Events
 local KeyPressed = require("events/KeyPressed")
 
@@ -19,16 +22,8 @@ function GameState:load()
     self.world = love.physics.newWorld(0, 0, true)
     local thing = love.physics.newBody(self.world, 100, 100, "dynamic")
 
-    local entity = Entity()
-    local body = Body(thing)
-    entity:add(body)
-    entity:add(DrawableCircle(50, true))
-    entity:add(Color(255, 255, 0))
-
     self.engine = Engine()
     self.eventmanager = EventManager()
-
-    self.engine:addEntity(entity)
 
     -- Draw systems
     self.engine:addSystem(DrawSystem())
@@ -39,7 +34,8 @@ function GameState:load()
     self.engine:addSystem(ParticleUpdateSystem())
     self.engine:addSystem(ParticlePositionSyncSystem())
 
-    -- Physic systems
+    -- Game systems
+    self.engine:addSystem(AsteroidSpawnSystem(), "update")
 end
 
 function GameState:update(dt)
