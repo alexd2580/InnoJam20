@@ -20,7 +20,7 @@ function DrawSystem:draw()
 end
 
 function DrawSystem:requires()
-    return {"Drawable", "Transformable"}
+    return {"Drawable"}
 end
 
 function DrawSystem:addEntity(entity)
