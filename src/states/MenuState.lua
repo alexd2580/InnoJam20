@@ -1,3 +1,4 @@
+local weather = require("lib/weather")
 
 local GameState = require("states/GameState")
 
@@ -10,6 +11,8 @@ local MenuState = class("MenuState", State)
 function MenuState:load()
     self.engine = Engine()
     self.eventmanager = EventManager()
+
+    self.city, self.weather = weather.getLocalWeather()
 end
 
 function MenuState:update(dt)
@@ -20,6 +23,13 @@ function MenuState:draw()
     self.engine:draw()
 
     love.graphics.print("Press any button to start the game!", 10, 10)
+
+    -- WE NEED THIS!
+    love.graphics.push()
+    love.graphics.scale(4)
+    msg = "By the way, the current weather in " .. self.city .. " is... " .. self.weather
+    love.graphics.print(msg, 50, 50)
+    love.graphics.pop()
 end
 
 function MenuState:keypressed(key, isrepeat)

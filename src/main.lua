@@ -1,4 +1,3 @@
-local http = require("socket.http")
 local screen_width = love.graphics.getWidth()
 local scale = screen_width / 1920
 
@@ -18,7 +17,6 @@ require("components/physic/Accelerating")
 require("components/physic/Body")
 require("components/physic/CountingDown")
 
-
 -- Framework Requirements
 require("core/Stackhelper")
 require("core/Resources")
@@ -26,50 +24,14 @@ require("core/Resources")
 local MenuState = require("states/MenuState")
 
 
-function queryUrl(url)
-    print("querying " .. url)
-    response, err = http.request(url)
-    print("response", response)
-    print("error", err)
-end
-
-
-function queryLocationApi(apiKey)
-    envVar = "IP_LOCATION_API_KEY"
-    apiKey = os.getenv(envVar)
-
-    baseEndpoint = "https://api.ipgeolocation.io/ipgeo"
-    url = baseEndpoint .. "?apiKey=" .. apiKey
-    print(queryUrl(url))
-end
-
-function queryWeatherApi(lat, lon)
-    envVar = "WEATHER_API_KEY"
-    apiKey = os.getenv(envVar)
-
-    baseEndpoint = "http://api.openweathermap.org/data/2.5/weather"
-    url = baseEndpoint .. "?lat=" .. lat .. "&lon=" .. lon .. "&APPID=" .. apiKey
-    print(queryUrl(url))
-end
-
-
-function getLocalWeather()
-    location = queryLocationApi()
-    print(location)
-    weather = queryWeatherApi()
-    print(weather)
-end
-
 function setUsernameSeed()
-    current_user = os.execute("whoami")
+    current_user = execute("whoami")
     math.randomseed(current_user)
 end
 
 
 function love.load()
     -- setUsernameSeed()
-    -- getLocalWeather()
-
     resources = Resources()
 
     -- Add your resources here:
