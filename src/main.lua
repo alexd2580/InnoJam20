@@ -1,3 +1,5 @@
+local http = require("socket.http")
+
 -- Main Lövetoys Library
 lovetoys = require("lib/lovetoys")
 lovetoys.initialize({globals = true, debug = true})
@@ -9,10 +11,49 @@ require("core/Resources")
 local MenuState = require("states/MenuState")
 
 
-function love.load()
+function queryUrl(url)
+    print("querying " .. url)
+    response, err = http.request(url)
+    print("response", response)
+    print("error", err)
+end
 
-    -- current_user = os.execute("whoami")
-    -- math.randomseed(current_user)
+
+function queryLocationApi(apiKey)
+    envVar = "IP_LOCATION_API_KEY"
+    apiKey = os.getenv(envVar)
+
+    baseEndpoint = "https://api.ipgeolocation.io/ipgeo"
+    url = baseEndpoint .. "?apiKey=" .. apiKey
+    print(queryUrl(url))
+end
+
+function queryWeatherApi(lat, lon)
+    envVar = "WEATHER_API_KEY"
+    apiKey = os.getenv(envVar)
+
+    baseEndpoint = "http://api.openweathermap.org/data/2.5/weather"
+    url = baseEndpoint .. "?lat=" .. lat .. "&lon=" .. lon .. "&APPID=" .. apiKey
+    print(queryUrl(url))
+end
+
+
+function getLocalWeather()
+    location = queryLocationApi()
+    print(location)
+    weather = queryWeatherApi()
+    print(weather)
+end
+
+function setUsernameSeed()
+    current_user = os.execute("whoami")
+    math.randomseed(current_user)
+end
+
+
+function love.load()
+    -- setUsernameSeed()
+    -- getLocalWeather()
 
     resources = Resources()
 
