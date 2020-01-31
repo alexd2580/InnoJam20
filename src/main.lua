@@ -1,4 +1,6 @@
 local http = require("socket.http")
+local screen_width = love.graphics.getWidth()
+local scale = screen_width / 1920
 
 -- Main Lövetoys Library
 lovetoys = require("lib/lovetoys")
@@ -82,6 +84,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.scale(scale, scale)
     stack:current():draw()
 end
 
