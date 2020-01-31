@@ -88,6 +88,10 @@ function GameState:draw()
 end
 
 function GameState:keypressed(key, isrepeat)
+    if key == 'escape' then
+        stack:pop()
+    end
+
     self.eventmanager:fireEvent(KeyPressed(key, isrepeat))
 end
 
