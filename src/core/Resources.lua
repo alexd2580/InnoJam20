@@ -1,7 +1,6 @@
 Resources = class("Resources")
 
 function Resources:initialize()
-    
     self.imageQueue = {}
     self.musicQueue = {}
     self.soundQueue = {}
