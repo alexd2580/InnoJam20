@@ -8,14 +8,15 @@ function DrawSystem:draw()
     love.graphics.setColor(255, 255, 255)
     for index, entity in ipairs(self.sortedTargets) do
         local drawable = entity:get("Drawable")
-        local pos = entity:get("Transformable")
+        local body = entity:get("Body")
         local sx, sy = drawable.sx, drawable.sy
         if entity:get("Circle") then
             local radius = entity:get("Circle").radius*2
             sx = radius/drawable.image:getWidth()
             sy = radius/drawable.image:getHeight()
         end
-        love.graphics.draw(drawable.image, pos.position.x, pos.position.y, pos.direction:getRadian(), sx, sy, drawable.ox, drawable.oy)
+        local x, y = body.body:getPosition()
+        love.graphics.draw(drawable.image, x, y, body:getAngle(), sx, sy, drawable.ox, drawable.oy)
     end
 end
 

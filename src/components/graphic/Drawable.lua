@@ -1,4 +1,4 @@
-Drawable = class("Drawable")
+Drawable = Component.create("Drawable")
 
 -- A component for drawing images on top of an entity
 -- Parameters are
