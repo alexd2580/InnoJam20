@@ -8,7 +8,12 @@ require("core/Resources")
 
 local MenuState = require("states/MenuState")
 
+
 function love.load()
+
+    -- current_user = os.execute("whoami")
+    -- math.randomseed(current_user)
+
     resources = Resources()
 
     -- Add your resources here:
