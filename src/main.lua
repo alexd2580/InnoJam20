@@ -75,9 +75,6 @@ function love.draw()
 end
 
 function love.keypressed(key, isrepeat)
-   if key == 'escape' then
-      love.event.quit()
-   end
     stack:current():keypressed(key, isrepeat)
 end
 

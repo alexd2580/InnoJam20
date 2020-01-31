@@ -23,6 +23,10 @@ function MenuState:draw()
 end
 
 function MenuState:keypressed(key, isrepeat)
+    if key == 'escape' then
+       love.event.quit()
+    end
+
     self.eventmanager:fireEvent(KeyPressed(key, isrepeat))
 
     -- Start the game when any key is pressed
