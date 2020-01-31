@@ -1,4 +1,4 @@
-local Particle = class("Particle")
+local Particle = Component.create("Particle")
 
 -- If this is set, the image will be emited as particles from the entity
 function Particle:initialize(image, maxParticles, offset, particlelife, emitterlife)

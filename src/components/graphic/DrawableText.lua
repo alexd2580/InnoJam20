@@ -1,4 +1,4 @@
-local DrawableText = class("DrawableText")
+local DrawableText = Component.create("DrawableText")
 
 -- Text that should be drawn on top of the entity
 function DrawableText:initialize(font, color,string, values)

@@ -12,16 +12,16 @@ end
 
 function ParticlePositionSyncSystem:syncPosition(entity)
     local particle = entity:get("Particle")
-    local transformable = entity:get("Transformable")
+    local body = entity:get("Body")
     local radian = transformable.direction:getRadian()
-    local rotatedOffset = particle.offset:rotate(transformable.direction:getRadian()):add(entity:get("Transformable").position)
+    local rotatedOffset = particle.offset:rotate(transformable.direction:getRadian()):add(body.getPositionVector())
 
     particle.particle:setPosition(rotatedOffset.x, rotatedOffset.y)
     particle.particle:setDirection(math.pi+radian)
 end
 
 function ParticlePositionSyncSystem:requires()
-    return {"Particle", "Transformable"}
+    return {"Particle", "Body"}
 end
 
 return ParticlePositionSyncSystem

@@ -1,10 +1,13 @@
-local Body = require("components/physic/Body")
-local Color = require("components/graphic/Color")
-local DrawableCircle = require("components/graphic/DrawableCircle")
+local Body, Color, DrawableCircle = Component.load({"Body", "Color", "DrawableCircle"})
 
--- Systems
+-- Draw Systems
 local DrawSystem = require("systems/draw/DrawSystem")
 local CircleDrawSystem = require("systems/draw/CircleDrawSystem")
+
+-- Particle Systems
+local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
+local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
+local ParticlePositionSyncSystem = require("systems/particle/ParticlePositionSyncSystem")
 
 -- Events
 local KeyPressed = require("events/KeyPressed")
@@ -27,16 +30,21 @@ function GameState:load()
 
     self.engine:addEntity(entity)
 
-    local system = CircleDrawSystem()
     -- Draw systems
-    self.engine:addSystem(system)
+    self.engine:addSystem(DrawSystem())
+    self.engine:addSystem(CircleDrawSystem())
+    self.engine:addSystem(ParticleDrawSystem())
+
+    -- Logic systems
+    self.engine:addSystem(ParticleUpdateSystem())
+    self.engine:addSystem(ParticlePositionSyncSystem())
 
     -- Physic systems
 end
 
 function GameState:update(dt)
-    self.engine:update(dt)
     self.world:update(dt)
+    self.engine:update(dt)
 end
 
 function GameState:draw()

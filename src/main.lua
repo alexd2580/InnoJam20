@@ -4,6 +4,17 @@ local http = require("socket.http")
 lovetoys = require("lib/lovetoys")
 lovetoys.initialize({globals = true, debug = true})
 
+-- Require all components once to load them into the registry
+require("components/graphic/Color")
+require("components/graphic/Drawable")
+require("components/graphic/DrawableCircle")
+require("components/graphic/DrawableText")
+require("components/particle/Particle")
+require("components/physic/Accelerating")
+require("components/physic/Body")
+require("components/physic/CountingDown")
+
+
 -- Framework Requirements
 require("core/Stackhelper")
 require("core/Resources")
