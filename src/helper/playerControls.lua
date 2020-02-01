@@ -1,3 +1,4 @@
+local Attracting = Component.load({"Attracting"})
 local playerControls = {}
 
 local IMPULSE = 100
@@ -24,6 +25,27 @@ function playerControls.applyImpulseFromInput(body, u, d, l, r)
         y = y / len
 
         body:applyLinearImpulse(x * IMPULSE, y * IMPULSE)
+    end
+end
+
+function playerControls.addGravityComponents(entity, a, r)
+    -- Make the player attracting, if the respective button is pressed
+    if love.keyboard.isDown(a) then
+        if entity:get("Attracting") == nil then
+            entity:add(Attracting(2000, 500))
+        elseif entity:get("Attracting").reverse then
+            entity:get("Attracting").reverse = false
+        end
+    elseif love.keyboard.isDown(r) then
+        if entity:get("Attracting") == nil then
+            entity:add(Attracting(1000, 500, true))
+        elseif not entity:get("Attracting").reverse then
+            entity:get("Attracting").reverse = true
+        end
+    elseif not love.keyboard.isDown(a) and not love.keyboard.isDown(a) then
+        if entity:get("Attracting") ~= nil then
+            entity:remove("Attracting")
+        end
     end
 end
 

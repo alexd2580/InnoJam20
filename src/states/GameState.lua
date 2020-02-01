@@ -52,7 +52,7 @@ function GameState:spawnEarth()
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
-    earth:add(Attracting(20, 500))
+    earth:add(Attracting(0.01, 400))
 
     self.engine:addEntity(earth)
 end

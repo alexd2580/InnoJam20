@@ -20,6 +20,9 @@ function GravitySystem:update(dt)
                     -- Apply force linear to the distance to the center of the attracting entity
                     local remainingForce = attracting.radius - distance
                     local forceVector = direction:getUnit():multiply(remainingForce)
+                    if attracting.reverse then
+                        forceVector = forceVector:multiply(-1)
+                    end
                     asteroid:get("Body").body:applyForce(forceVector.x, forceVector.y)
                 end
             end
