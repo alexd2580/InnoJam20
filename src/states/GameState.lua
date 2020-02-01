@@ -2,11 +2,11 @@ local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
       Caged, MaxVelocity, SpawnMe, Circle,
-      Attracting, Position, Drawable = Component.load({
+      Attracting, ImagePosition, Drawable, Parallax = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
         "Caged", "MaxVelocity", "SpawnMe", "Circle",
-        "Attracting", "ImagePosition", "Drawable"
+        "Attracting", "ImagePosition", "Drawable", "Parallax"
 })
 
 -- Draw Systems
@@ -24,6 +24,7 @@ local AngelControlSystem = require("systems/gameplay/AngelControlSystem")
 local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
 local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
 local CleanupSystem = require("systems/gameplay/CleanupSystem")
+local ParallaxSystem = require("systems/gameplay/ParallaxSystem")
 local SpawnSystem = require("systems/physic/SpawnSystem")
 
 -- Physics Systems
@@ -94,11 +95,19 @@ end
 
 function GameState:spawnBackground()
     local background = Entity()
-    local drawable = Drawable(resources.images.background)
-    background:add(Position(-500, -500))
+    local drawable = Drawable(resources.images.background, 1)
+    background:add(ImagePosition(-500, -500))
+    background:add(Parallax(100))
     background:add(drawable)
-
     self.engine:addEntity(background)
+
+    local deepfield = Entity()
+    drawable = Drawable(resources.images.deepfield, 5)
+    deepfield:add(ImagePosition(0, 0))
+    deepfield:add(Parallax(50))
+    deepfield:add(drawable)
+
+    self.engine:addEntity(deepfield)
 end
 
 function GameState.handleAsteroidEarthCollision(
@@ -174,9 +183,10 @@ function GameState:load()
     self.engine:addSystem(AsteroidSpawnSystem())
     self.engine:addSystem(CleanupSystem())
     self.engine:addSystem(spriteSystem, "update")
+    self.engine:addSystem(SpawnSystem())
+    self.engine:addSystem(ParallaxSystem())
         -- Physics
     self.engine:addSystem(GravitySystem())
-    self.engine:addSystem(SpawnSystem())
     self.engine:addSystem(CageSystem())
     self.engine:addSystem(MaxVelocitySystem())
 
