@@ -2,11 +2,11 @@ local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
       Caged, MaxVelocity, SpawnMe, Circle,
-      Attracting = Component.load({
+      Attracting, Position, Drawable = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
         "Caged", "MaxVelocity", "SpawnMe", "Circle",
-        "Attracting"
+        "Attracting", "ImagePosition", "Drawable"
 })
 
 -- Draw Systems
@@ -92,6 +92,15 @@ function GameState:spawnDevil()
 end
 
 
+function GameState:spawnBackground()
+    local background = Entity()
+    local drawable = Drawable(resources.images.background)
+    background:add(Position(-500, -500))
+    background:add(drawable)
+
+    self.engine:addEntity(background)
+end
+
 function GameState.handleAsteroidEarthCollision(
     asteroid, earth, normal, normalImpulse, tangent, tangentImpulse
 )
@@ -171,6 +180,7 @@ function GameState:load()
     self.engine:addSystem(CageSystem())
     self.engine:addSystem(MaxVelocitySystem())
 
+    self:spawnBackground()
     self:spawnEarth()
     self:spawnAngel()
     self:spawnDevil()
