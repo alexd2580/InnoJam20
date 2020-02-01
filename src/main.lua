@@ -43,6 +43,7 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("circle", "data/img/circle.png")
+    resources:addAnimation("circle", "data/img/good-player.png", 64, 64, 3)
 
     resources:load()
 
