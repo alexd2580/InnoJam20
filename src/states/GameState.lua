@@ -48,8 +48,8 @@ function GameState:spawnEarth()
     local position = Vector(startX, startY)
     earth:add(SpawnMe(earthSize, position, nil, 0.2))
 
-    earth:add(Color(0.2, 0.5, 0.2))
-    earth:add(DrawableCircle(earthSize, true))
+
+    earth:add(DrawableSprite(resources.sprites.planet, 3))
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
