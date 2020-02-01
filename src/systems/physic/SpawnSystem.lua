@@ -29,6 +29,11 @@ function SpawnSystem:update(dt)
             body:setLinearVelocity(mx, my)
         end
 
+        if spawnMe.impulse then
+            local ix, iy = spawnMe.impulse.x, spawnMe.impulse.y
+            body:applyLinearImpulse(ix, iy)
+        end
+
         entity:remove("SpawnMe")
     end
 end

@@ -11,13 +11,13 @@ function AsteroidSpawnSystem:initialize()
     self.spawntime = 1
 end
 
-function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector)
+function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse)
     local world = stack:current().world
     local engine = stack:current().engine
 
     -- Create a new entity with a (future) physics body.
     local asteroid = Entity()
-    asteroid:add(SpawnMe(size, position, motionVector))
+    asteroid:add(SpawnMe(size, position, motionVector, nil, impulse))
 
     -- Add drawing stuff.
     asteroid:add(DrawableCircle(size, true))

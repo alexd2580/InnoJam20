@@ -93,7 +93,7 @@ end
 
 
 function GameState.handleAsteroidEarthCollision(
-    asteroid, earth, normal, normalImpulse, tangent, tangentImpulse
+    asteroid, earth, earthToAsteroid, normalImpulse, tangentImpulse
 )
     local asteroidRadius = asteroid:get("Asteroid").size
     local body = asteroid:get("Body").body
@@ -107,17 +107,28 @@ function GameState.handleAsteroidEarthCollision(
     local asteroidArea = math.pi * asteroidRadius * asteroidRadius
     local shardArea = asteroidArea / numShards
     local shardRadius = math.floor(math.sqrt(shardArea / math.pi))
+    local shardEnergyFraction = shardArea / asteroidArea
 
-    if shardRadius > 0 then
-        -- Convert Box2D Vectors.
+    local earthAntiCollision = earthToAsteroid:multiply(-0.5 * normalImpulse)
+    earth:get("Body").body:applyLinearImpulse(earthAntiCollision.x, earthAntiCollision.y)
+
+    if shardRadius > 0.5 then
+        local tangent = Vector(earthToAsteroid.y, -earthToAsteroid.x)
         local tangentV = tangent:multiply(tangentImpulse)
-        local normalV = normal:multiply(-normalImpulse)
-        local motionVector = normalV:add(tangentV)
+        local normalV = earthToAsteroid:multiply(normalImpulse)
+        local impulse = tangentV:multiply(2.0 * shardEnergyFraction)
 
         for i = 1, numShards do
             local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
-            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, motionVector)
+            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, nil, impulse)
         end
+    else
+        local earthShape = earth:get("Body").body:getFixtures()[1]:getShape()
+        local radius = earthShape:getRadius()
+        local newRadius = math.sqrt((radius * radius * math.pi + 100 * asteroidArea) / math.pi)
+        earthShape:setRadius(newRadius)
+
+        earth:get("DrawableCircle").radius = newRadius
     end
 end
 
@@ -128,12 +139,11 @@ function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
         return
     end
     local nx, ny = contact:getNormal()
-    local normal = Vector(nx, ny)
-    local tangent = Vector(ny, -nx) -- Rotate 90 deg.
+    local bToA = Vector(nx, ny)
     if aEntity:has("Earth") and bEntity:has("Asteroid") then
-        GameState.handleAsteroidEarthCollision(bEntity, aEntity, normal, normalImpulse, tangent, tangentImpulse)
+        GameState.handleAsteroidEarthCollision(bEntity, aEntity, bToA:multiply(-1), normalImpulse, tangentImpulse)
     elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
-        GameState.handleAsteroidEarthCollision(aEntity, bEntity, -normal, normalImpulse, -tangent, tangentImpulse)
+        GameState.handleAsteroidEarthCollision(aEntity, bEntity, bToA, normalImpulse, tangentImpulse)
     end
 end
 
