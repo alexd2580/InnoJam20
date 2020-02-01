@@ -1,10 +1,10 @@
 local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
-      Caged, MaxVelocity, SpawnMe = Component.load({
+      Caged, MaxVelocity, SpawnMe, Circle= Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
-        "Caged", "MaxVelocity", "SpawnMe"
+        "Caged", "MaxVelocity", "SpawnMe", "Circle"
 })
 
 -- Draw Systems
@@ -62,10 +62,11 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(SpawnMe(playerSize, position, nil, 0.4))
     player:add(Caged(100, 100))
     player:add(MaxVelocity(500))
+    player:add(Circle(playerSize))
+    player:add(DrawableCircle(playerSize, true))
 
     player:add(Color(r, g, b))
-    local playerSprite = resources.sprites.circle
-    player:add(DrawableSprite(playerSprite.quads, playerSprite.spriteSheet, 1))
+    player:add(DrawableSprite(resources.sprites.player, 1))
 
     return player
 end

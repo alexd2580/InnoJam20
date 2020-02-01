@@ -68,7 +68,9 @@ function Resources:load(threaded)
             data.height,
             data.duration
         ),
-        spriteSheet = spriteImage
+        spriteSheet = spriteImage,
+        height = data.height,
+        width = data.width
         }
 
         self.spriteQueue[name] = nil

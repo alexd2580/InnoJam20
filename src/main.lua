@@ -13,6 +13,7 @@ require("components/gameplay/Earth")
 require("components/gameplay/JustSpawned")
 require("components/gameplay/ReadyForCleanup")
 require("components/graphic/Color")
+require("components/graphic/Circle")
 require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
 require("components/graphic/DrawableText")
@@ -47,7 +48,7 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("circle", "data/img/circle.png")
-    resources:addSprite("circle", "data/img/good-player.png", 64, 64, 3)
+    resources:addSprite("player", "data/img/good-player.png", 64, 64, 3)
 
     resources:load()
 
