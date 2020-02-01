@@ -61,12 +61,16 @@ function Resources:load(threaded)
 
     for name, data in pairs(self.animationQueue) do
         local animationImage = love.graphics.newImage(data.path)
-        self.animations[name] = loadAnimation(
+        self.animations[name] = {
+            quads = loadAnimation(
             animationImage,
             data.width,
             data.height,
             data.duration
-        )
+        ),
+        spriteSheet = animationImage
+        }
+        
         self.animationQueue[name] = nil
     end
 end
