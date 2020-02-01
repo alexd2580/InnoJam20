@@ -5,14 +5,15 @@ local DrawSystem = require("systems/draw/DrawSystem")
 local CircleDrawSystem = require("systems/draw/CircleDrawSystem")
 
 -- Particle Systems
-local AngelControlSystem = require("systems/game/AngelControlSystem")
-local DevilControlSystem = require("systems/game/DevilControlSystem")
 local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
 local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
 local ParticlePositionSyncSystem = require("systems/particle/ParticlePositionSyncSystem")
 
 -- Game Systems
-local AsteroidSpawnSystem = require("systems/game/AsteroidSpawnSystem")
+local AngelControlSystem = require("systems/gameplay/AngelControlSystem")
+local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
+local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
+local CleanupSystem = require("systems/gameplay/CleanupSystem")
 
 -- Events
 local KeyPressed = require("events/KeyPressed")
@@ -91,6 +92,7 @@ function GameState:load()
     self.engine:addSystem(AngelControlSystem(), "update")
     self.engine:addSystem(DevilControlSystem(), "update")
     self.engine:addSystem(AsteroidSpawnSystem(), "update")
+    self.engine:addSystem(CleanupSystem(), "update")
 
     self:spawnEarth()
     self:spawnAngel()
