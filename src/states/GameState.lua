@@ -49,7 +49,7 @@ function GameState:spawnEarth()
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
-    earth:add(Asteroid(earthSize))
+    -- earth:add(Asteroid(earthSize))
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
@@ -195,15 +195,15 @@ end
 function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
     -- local tangent = Vector(ny, -nx) -- Rotate 90 deg.
 
-    local aEntity, bEntity = a:getUserData(), b:getUserData()
-    if not aEntity or not bEntity then
-        return
-    end
-    local nx, ny = contact:getNormal()
-    local normal = Vector(nx, ny)
-    if aEntity:has("Asteroid") and bEntity:has("Asteroid") then
-        GameState.handleAsteroidCollision(aEntity, bEntity, normal, normalImpulse, tangentImpulse)
-    end
+    -- local aEntity, bEntity = a:getUserData(), b:getUserData()
+    -- if not aEntity or not bEntity then
+    --     return
+    -- end
+    -- local nx, ny = contact:getNormal()
+    -- local normal = Vector(nx, ny)
+    -- if aEntity:has("Asteroid") and bEntity:has("Asteroid") then
+    --     GameState.handleAsteroidCollision(aEntity, bEntity, normal, normalImpulse, tangentImpulse)
+    -- end
 end
 
 
