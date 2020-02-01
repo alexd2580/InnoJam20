@@ -66,7 +66,6 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(DrawableCircle(playerSize, true))
 
     player:add(Color(r, g, b))
-    player:add(DrawableSprite(resources.sprites.player, 1))
 
     return player
 end
@@ -76,6 +75,7 @@ function GameState:spawnAngel()
     local startX, startY = 200, 200
     local angel = self:buildBasePlayer(startX, startY, 0.8, 0.8, 0.8)
     angel:add(Angel())
+    angel:add(DrawableSprite(resources.sprites.good, 1))
     self.engine:addEntity(angel)
 end
 
@@ -84,6 +84,7 @@ function GameState:spawnDevil()
     local startX, startY = 300, 300
     local devil = self:buildBasePlayer(startX, startY, 0.8, 0.2, 0.2)
     devil:add(Devil())
+    devil:add(DrawableSprite(resources.sprites.bad, 1))
     self.engine:addEntity(devil)
 end
 

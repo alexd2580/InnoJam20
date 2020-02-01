@@ -48,7 +48,8 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("circle", "data/img/circle.png")
-    resources:addSprite("player", "data/img/good-player.png", 64, 64, 3)
+    resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
+    resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
 
     resources:load()
 
