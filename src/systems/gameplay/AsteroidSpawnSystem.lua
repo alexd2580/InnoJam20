@@ -8,7 +8,7 @@ local AsteroidSpawnSystem = class("AsteroidSpawnSystem", System)
 function AsteroidSpawnSystem:initialize()
     System.initialize(self)
     self.timer = 0
-    self.spawntime = 1
+    self.spawntime = 0.1
 end
 
 function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector)

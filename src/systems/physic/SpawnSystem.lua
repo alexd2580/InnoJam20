@@ -3,6 +3,7 @@ local Body, SpawneMe = Component.load({"Body", "SpawnMe"})
 
 local SpawnSystem = class("SpawnSystem", System)
 
+
 function SpawnSystem:update(dt)
     local world = stack:current().world
     local engine = stack:current().engine

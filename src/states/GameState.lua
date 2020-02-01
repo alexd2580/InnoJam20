@@ -46,6 +46,7 @@ function GameState:spawnEarth()
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
+    earth:add(Asteroid(earthSize))
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
@@ -87,48 +88,116 @@ function GameState:spawnDevil()
 end
 
 
-function GameState.handleAsteroidEarthCollision(
-    asteroid, earth, normal, normalImpulse, tangent, tangentImpulse
-)
-    local asteroidRadius = asteroid:get("Asteroid").size
-    local body = asteroid:get("Body").body
-    local asteroidX, asteroidY = body:getPosition()
-    local asteroidPosition = Vector(asteroidX, asteroidY)
-    local oldX, oldY = body:getPosition()
-    body:destroy()
-    stack:current().engine:removeEntity(asteroid)
+function radiusToSize(radius)
+    return math.pi * radius * radius
+end
 
-    local numShards = math.random(1, 5)
-    local asteroidArea = math.pi * asteroidRadius * asteroidRadius
-    local shardArea = asteroidArea / numShards
-    local shardRadius = math.floor(math.sqrt(shardArea / math.pi))
 
-    if shardRadius > 0 then
-        -- Convert Box2D Vectors.
-        local tangentV = tangent:multiply(tangentImpulse)
-        local normalV = normal:multiply(-normalImpulse)
-        local motionVector = normalV:add(tangentV)
+function sizeToRadius(radius)
+    return math.sqrt(radius / math.pi)
+end
 
-        for i = 1, numShards do
-            local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
-            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, motionVector)
-        end
+
+function updateSize(entity, newSize)
+    if newSize < 1 then
+        entity:get("Body").body:destroy()
+        stack:current().engine:removeEntity(entity)
+        return
     end
+
+    radius = sizeToRadius(newSize)
+    entity:get("Asteroid").size = radius
+    entity:get("DrawableCircle").radius = radius
+    entity:get("Body").body:getFixtures()[1]:getShape():setRadius(radius)
+end
+
+
+function breakApart(entity, percent, collisionNormal)
+
+
+    AsteroidSpawnSystem.spawnAsteroid(spawnPos, shardRadius, motionVector)
+
+end
+
+
+function GameState.handleAsteroidCollision(a, b, normal, normalImpulse, tangentImpulse)
+    local aAsteroid, bAsteroid = a:get("Asteroid"), b:get("Asteroid")
+    local aRadius, bRadius = aAsteroid.size, bAsteroid.size
+    local aSize, bSize = radiusToSize(aRadius), radiusToSize(bRadius)
+    local aBody, bBody = a:get("Body").body, b:get("Body").body
+    local aPos, bPos = Vector(aBody:getX(), aBody:getY()), Vector(bBody:getX(), bBody:getY())
+
+    if normalImpulse > 60 then
+        -- Break.
+        local breakFactor = normalImpulse / (normalImpulse + math.abs(tangentImpulse))
+
+        if aSize > bSize then
+            bBody:applyLinearImpulse(normal.x * normalImpulse, normal.y * normalImpulse)
+            aBody:applyLinearImpulse(normal.x * normalImpulse / 2, normal.y * normalImpulse / 2)
+        else
+            aBody:applyLinearImpulse(-normal.x * normalImpulse, -normal.y * normalImpulse)
+            bBody:applyLinearImpulse(-normal.x * normalImpulse / 2, -normal.y * normalImpulse / 2)
+        end
+    elseif normalImpulse > 30 then
+        -- Bonk.
+        if aSize > bSize then
+            bBody:applyLinearImpulse(normal.x * normalImpulse, normal.y * normalImpulse)
+            aBody:applyLinearImpulse(normal.x * normalImpulse / 2, normal.y * normalImpulse / 2)
+        else
+            aBody:applyLinearImpulse(-normal.x * normalImpulse, -normal.y * normalImpulse)
+            bBody:applyLinearImpulse(-normal.x * normalImpulse / 2, -normal.y * normalImpulse / 2)
+        end
+    elseif normalImpulse > 0 then
+        -- Absorb.
+        local safetyMargin = normal:multiply(0.1)
+        local absorbtionRate = 1000
+        if aSize > bSize then
+            local moveOver = math.min(absorbtionRate, bSize)
+            aSize = aSize + moveOver
+            bSize = bSize - moveOver
+        else
+            local moveOver = math.min(absorbtionRate, aSize)
+            bSize = bSize + moveOver
+            aSize = aSize - moveOver
+        end
+
+        updateSize(a, aSize)
+        updateSize(b, bSize)
+    end
+    return
+
+    -- local numShards = math.random(1, 5)
+    -- local asteroidArea = math.pi * asteroidRadius * asteroidRadius
+    -- local shardArea = asteroidArea / numShards
+    -- local shardRadius = math.floor(math.sqrt(shardArea / math.pi))
+    --
+    -- if shardRadius > 0 then
+    --     -- Convert Box2D Vectors.
+    --     local tangentV = tangent:multiply(tangentImpulse)
+    --     local normalV = normal:multiply(normalImpulse)
+    --     local motionVector = normalV:add(tangentV)
+    --
+    --     for i = 1, numShards do
+    --         local collisionOffset = normalV:multiply(0.1)
+    --         local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
+    --         local spawnPos = asteroidPosition:add(collisionOffset):add(randOffset)
+    --         AsteroidSpawnSystem.spawnAsteroid(spawnPos, shardRadius, motionVector)
+    --     end
+    -- end
 end
 
 
 function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
+    -- local tangent = Vector(ny, -nx) -- Rotate 90 deg.
+
     local aEntity, bEntity = a:getUserData(), b:getUserData()
     if not aEntity or not bEntity then
         return
     end
     local nx, ny = contact:getNormal()
     local normal = Vector(nx, ny)
-    local tangent = Vector(ny, -nx) -- Rotate 90 deg.
-    if aEntity:has("Earth") and bEntity:has("Asteroid") then
-        GameState.handleAsteroidEarthCollision(bEntity, aEntity, normal, normalImpulse, tangent, tangentImpulse)
-    elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
-        GameState.handleAsteroidEarthCollision(aEntity, bEntity, -normal, normalImpulse, -tangent, tangentImpulse)
+    if aEntity:has("Asteroid") and bEntity:has("Asteroid") then
+        GameState.handleAsteroidCollision(aEntity, bEntity, normal, normalImpulse, tangentImpulse)
     end
 end
 
