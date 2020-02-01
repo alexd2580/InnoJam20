@@ -1,6 +1,7 @@
-local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle = Component.load(
-    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle"}
+local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, SpawnMe = Component.load(
+    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "SpawnMe"}
 )
+local Vector = require("helper/Vector")
 
 -- Draw Systems
 local DrawSystem = require("systems/draw/DrawSystem")
@@ -16,6 +17,7 @@ local AngelControlSystem = require("systems/gameplay/AngelControlSystem")
 local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
 local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
 local CleanupSystem = require("systems/gameplay/CleanupSystem")
+local SpawnSystem = require("systems/physic/SpawnSystem")
 
 -- Events
 local KeyPressed = require("events/KeyPressed")
@@ -30,11 +32,8 @@ function GameState:spawnEarth()
 
     local earthSize = 150
     local startX, startY = 1920 / 2, 1080 / 2
-    local body = love.physics.newBody(self.world, startX, startY, "dynamic")
-    local shape = love.physics.newCircleShape(earthSize)
-    local fixture = love.physics.newFixture(body, shape)
-    fixture:setUserData(earth)
-    earth:add(Body(body))
+    local position = Vector(startX, startY)
+    earth:add(SpawnMe(earthSize, position, nil))
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
@@ -49,10 +48,8 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     local player = Entity()
 
     local playerSize = 40
-    local body = love.physics.newBody(self.world, startX, startY, "dynamic")
-    local shape = love.physics.newCircleShape(playerSize)
-    local fixture = love.physics.newFixture(body, shape)
-    player:add(Body(body))
+    local position = Vector(startX, startY)
+    player:add(SpawnMe(playerSize, position, nil))
 
     player:add(Color(r, g, b))
     player:add(DrawableCircle(playerSize, true))
@@ -77,22 +74,48 @@ function GameState:spawnDevil()
 end
 
 
-function GameState.handleEarthAsteroidCollision(earth, asteroid, contact, normal, tangent)
-    asteroid:get("Body").body:destroy()
+function GameState.handleAsteroidEarthCollision(
+    asteroid, earth, normal, normalImpulse, tangent, tangentImpulse
+)
+    local asteroidRadius = asteroid:get("Asteroid").size
+    local body = asteroid:get("Body").body
+    local asteroidX, asteroidY = body:getPosition()
+    local asteroidPosition = Vector(asteroidX, asteroidY)
+    local oldX, oldY = body:getPosition()
+    body:destroy()
     stack:current().engine:removeEntity(asteroid)
+
+    local numShards = math.random(1, 5)
+    local asteroidArea = math.pi * asteroidRadius * asteroidRadius
+    local shardArea = asteroidArea / numShards
+    local shardRadius = math.floor(math.sqrt(shardArea / math.pi))
+
+    if shardRadius > 0 then
+        -- Convert Box2D Vectors.
+        local tangentV = tangent:multiply(tangentImpulse)
+        local normalV = normal:multiply(-normalImpulse)
+        local motionVector = normalV:add(tangentV)
+
+        for i = 1, numShards do
+            local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
+            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, motionVector)
+        end
+    end
 end
 
 
-function GameState.onCollide(a, b, contact, normal, tangent)
+function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
     local aEntity, bEntity = a:getUserData(), b:getUserData()
     if not aEntity or not bEntity then
         return
     end
+    local nx, ny = contact:getNormal()
+    local normal = Vector(nx, ny)
+    local tangent = Vector(ny, -nx) -- Rotate 90 deg.
     if aEntity:has("Earth") and bEntity:has("Asteroid") then
-        GameState.handleEarthAsteroidCollision(aEntity, bEntity, contact, normal, tangent)
+        GameState.handleAsteroidEarthCollision(bEntity, aEntity, normal, normalImpulse, tangent, tangentImpulse)
     elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
-        -- TODO reverse tangent and normal?
-        GameState.handleEarthAsteroidCollision(bEntity, aEntity, contact, normal, tangent)
+        GameState.handleAsteroidEarthCollision(aEntity, bEntity, -normal, normalImpulse, -tangent, tangentImpulse)
     end
 end
 
@@ -104,16 +127,19 @@ function GameState:load()
     self.engine = Engine()
     self.eventmanager = EventManager()
 
-    -- Draw systems
+    -- Physic systems.
+    self.engine:addSystem(SpawnSystem())
+
+    -- Draw systems.
     self.engine:addSystem(DrawSystem())
     self.engine:addSystem(CircleDrawSystem())
     self.engine:addSystem(ParticleDrawSystem())
 
-    -- Logic systems
+    -- Logic systems.
     self.engine:addSystem(ParticleUpdateSystem())
     self.engine:addSystem(ParticlePositionSyncSystem())
 
-    -- Game systems
+    -- Game systems.
     self.engine:addSystem(AngelControlSystem(), "update")
     self.engine:addSystem(DevilControlSystem(), "update")
     self.engine:addSystem(AsteroidSpawnSystem(), "update")

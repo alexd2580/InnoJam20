@@ -20,6 +20,7 @@ require("components/particle/Particle")
 require("components/physic/Accelerating")
 require("components/physic/Body")
 require("components/physic/CountingDown")
+require("components/physic/SpawnMe")
 
 -- Framework Requirements
 require("core/Stackhelper")
