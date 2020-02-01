@@ -22,7 +22,19 @@ function SpriteSystem:draw()
 --            love.graphics.setColor(color.red, color.green, color.blue)
 --        end
         local x, y = entity:get("Body").body:getPosition()
-        love.graphics.draw(sprite.spriteSheet, sprite.quads[spriteNum], x, y)
+        local ox, oy = sprite.width/2, sprite.height/2
+        local sx, sy = 1, 1
+        if entity:get("Circle") then
+            local diameter = entity:get("Circle").radius*2
+            sx = diameter/sprite.width
+            sy = diameter/sprite.height
+        end
+        love.graphics.draw(
+            sprite.spriteSheet, sprite.quads[spriteNum],
+            x, y, 0,
+            sx, sy,
+            ox, oy
+        )
     end
 end
 

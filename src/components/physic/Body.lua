@@ -3,7 +3,7 @@ local Vector = require("helper/Vector")
 local Body = Component.create("Body", {"body"})
 
 function Body:getPositionVector()
-    local x, y = self.getPosition()
+    local x, y = self.body:getPosition()
     return Vector(x, y)
 end
 

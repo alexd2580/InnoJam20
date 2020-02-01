@@ -1,10 +1,12 @@
 local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
-      Caged, MaxVelocity, SpawnMe = Component.load({
+      Caged, MaxVelocity, SpawnMe, Circle,
+      Attracting = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
-        "Caged", "MaxVelocity", "SpawnMe"
+        "Caged", "MaxVelocity", "SpawnMe", "Circle",
+        "Attracting"
 })
 
 -- Draw Systems
@@ -25,6 +27,7 @@ local CleanupSystem = require("systems/gameplay/CleanupSystem")
 local SpawnSystem = require("systems/physic/SpawnSystem")
 
 -- Physics Systems
+local GravitySystem = require("systems/physic/GravitySystem")
 local CageSystem = require("systems/physic/CageSystem")
 local MaxVelocitySystem = require("systems/physic/MaxVelocitySystem")
 
@@ -50,6 +53,7 @@ function GameState:spawnEarth()
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
+    earth:add(Attracting(20, 500))
 
     self.engine:addEntity(earth)
 end
@@ -63,10 +67,9 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(SpawnMe(playerSize, position, nil, 0.4))
     player:add(Caged(100, 100))
     player:add(MaxVelocity(500))
+    player:add(Circle(playerSize))
 
     player:add(Color(r, g, b))
-    local playerSprite = resources.sprites.circle
-    player:add(DrawableSprite(playerSprite.quads, playerSprite.spriteSheet, 1))
 
     return player
 end
@@ -76,6 +79,7 @@ function GameState:spawnAngel()
     local startX, startY = 200, 200
     local angel = self:buildBasePlayer(startX, startY, 0.8, 0.8, 0.8)
     angel:add(Angel())
+    angel:add(DrawableSprite(resources.sprites.good, 1))
     self.engine:addEntity(angel)
 end
 
@@ -84,6 +88,7 @@ function GameState:spawnDevil()
     local startX, startY = 300, 300
     local devil = self:buildBasePlayer(startX, startY, 0.8, 0.2, 0.2)
     devil:add(Devil())
+    devil:add(DrawableSprite(resources.sprites.bad, 1))
     self.engine:addEntity(devil)
 end
 
@@ -230,6 +235,7 @@ function GameState:load()
     self.engine:addSystem(CleanupSystem())
     self.engine:addSystem(spriteSystem, "update")
         -- Physics
+    self.engine:addSystem(GravitySystem())
     self.engine:addSystem(SpawnSystem())
     self.engine:addSystem(CageSystem())
     self.engine:addSystem(MaxVelocitySystem())

@@ -32,10 +32,10 @@ end
 
 function Resources:addSprite(name, src, width, height, duration)
     self.spriteQueue[name] = {
-        path = "data/img/good-player.png",
-        width = 64,
-        height = 64,
-        duration = 3,
+        path = src,
+        width = width,
+        height = height,
+        duration = duration,
     }
 end
 
@@ -68,7 +68,9 @@ function Resources:load(threaded)
             data.height,
             data.duration
         ),
-        spriteSheet = spriteImage
+        spriteSheet = spriteImage,
+        height = data.height,
+        width = data.width
         }
 
         self.spriteQueue[name] = nil

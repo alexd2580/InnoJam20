@@ -13,6 +13,7 @@ require("components/gameplay/Earth")
 require("components/gameplay/JustSpawned")
 require("components/gameplay/ReadyForCleanup")
 require("components/graphic/Color")
+require("components/graphic/Circle")
 require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
 require("components/graphic/DrawableText")
@@ -24,6 +25,7 @@ require("components/physic/CountingDown")
 require("components/physic/SpawnMe")
 require("components/physic/Caged")
 require("components/physic/MaxVelocity")
+require("components/physic/Attracting")
 
 -- Framework Requirements
 require("core/Stackhelper")
@@ -47,7 +49,8 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("circle", "data/img/circle.png")
-    resources:addSprite("circle", "data/img/good-player.png", 64, 64, 3)
+    resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
+    resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
 
     resources:load()
 
