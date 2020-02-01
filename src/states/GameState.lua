@@ -42,7 +42,7 @@ function GameState:spawnEarth()
     local earthSize = 150
     local startX, startY = 1920 / 2, 1080 / 2
     local position = Vector(startX, startY)
-    earth:add(SpawnMe(earthSize, position, nil))
+    earth:add(SpawnMe(earthSize, position, nil, 0.2))
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
@@ -59,7 +59,7 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
 
     local playerSize = 40
     local position = Vector(startX, startY)
-    player:add(SpawnMe(playerSize, position, nil))
+    player:add(SpawnMe(playerSize, position, nil, 0.4))
     player:add(Caged(100, 100))
     player:add(MaxVelocity(500))
 
