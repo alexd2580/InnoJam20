@@ -53,6 +53,7 @@ function love.load()
     resources:addImage("parallax", "data/img/deepfield.jpg")
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
+    resources:addSprite("planet", "data/img/planet.png", 400, 400, 12)
 
     resources:load()
 
