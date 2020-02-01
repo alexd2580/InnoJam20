@@ -18,6 +18,8 @@ require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
 require("components/graphic/DrawableText")
 require("components/graphic/DrawableSprite")
+require("components/graphic/ImagePosition")
+require("components/graphic/Parallax")
 require("components/particle/Particle")
 require("components/physic/Accelerating")
 require("components/physic/Body")
@@ -48,7 +50,8 @@ function love.load()
     resources = Resources()
 
     -- Add your resources here:
-    resources:addImage("circle", "data/img/circle.png")
+    resources:addImage("background", "data/img/deepfield.jpg")
+    resources:addImage("deepfield", "data/img/bg.png")
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
 

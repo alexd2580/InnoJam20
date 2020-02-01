@@ -2,11 +2,11 @@ local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
       Caged, MaxVelocity, SpawnMe, Circle,
-      Attracting = Component.load({
+      Attracting, ImagePosition, Drawable, Parallax = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
         "Caged", "MaxVelocity", "SpawnMe", "Circle",
-        "Attracting"
+        "Attracting", "ImagePosition", "Drawable", "Parallax"
 })
 
 -- Draw Systems
@@ -24,6 +24,7 @@ local AngelControlSystem = require("systems/gameplay/AngelControlSystem")
 local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
 local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
 local CleanupSystem = require("systems/gameplay/CleanupSystem")
+local ParallaxSystem = require("systems/gameplay/ParallaxSystem")
 local SpawnSystem = require("systems/physic/SpawnSystem")
 
 -- Physics Systems
@@ -94,9 +95,10 @@ end
 
 function setEarthRadius(earth, newRadius)
     local body = earth:get("Body").body
-    if newRadius < 1 then
+    if newRadius < 10 then
         body:destroy()
         stack:current().engine:removeEntity(earth)
+        print("Remove earth")
         return false
     end
 
@@ -104,6 +106,25 @@ function setEarthRadius(earth, newRadius)
     earth:get("DrawableCircle").radius = newRadius
     return true
 end
+
+
+function GameState:spawnBackground()
+    local background = Entity()
+    local drawable = Drawable(resources.images.background, 1)
+    background:add(ImagePosition(-500, -500))
+    background:add(Parallax(100))
+    background:add(drawable)
+    self.engine:addEntity(background)
+
+    local deepfield = Entity()
+    drawable = Drawable(resources.images.deepfield, 5)
+    deepfield:add(ImagePosition(0, 0))
+    deepfield:add(Parallax(50))
+    deepfield:add(drawable)
+
+    self.engine:addEntity(deepfield)
+end
+
 
 function GameState.handleAsteroidEarthCollision(
     asteroid, earth, earthToAsteroid, normalImpulse, tangentImpulse
@@ -162,15 +183,19 @@ function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
     if not aEntity or not bEntity then
         return
     end
-    if aEntity:get("Body"):isDestroyed() or bEntity:get("Body"):isDestroyed() then
+    if aEntity:get("Body").body:isDestroyed() or bEntity:get("Body").body:isDestroyed() then
         return
     end
 
+
     local nx, ny = contact:getNormal()
+    print("normal", nx, ny)
     local bToA = Vector(nx, ny)
     if aEntity:has("Earth") and bEntity:has("Asteroid") then
+        print(bEntity:get("Body").body:getPosition())
         GameState.handleAsteroidEarthCollision(bEntity, aEntity, bToA:multiply(-1), normalImpulse, tangentImpulse)
     elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
+        print(aEntity:get("Body").body:getPosition())
         GameState.handleAsteroidEarthCollision(aEntity, bEntity, bToA, normalImpulse, tangentImpulse)
     end
 end
@@ -202,12 +227,14 @@ function GameState:load()
     self.engine:addSystem(AsteroidSpawnSystem())
     self.engine:addSystem(CleanupSystem())
     self.engine:addSystem(spriteSystem, "update")
+    self.engine:addSystem(SpawnSystem())
+    self.engine:addSystem(ParallaxSystem())
         -- Physics
     self.engine:addSystem(GravitySystem())
-    self.engine:addSystem(SpawnSystem())
     self.engine:addSystem(CageSystem())
     self.engine:addSystem(MaxVelocitySystem())
 
+    self:spawnBackground()
     self:spawnEarth()
     self:spawnAngel()
     self:spawnDevil()

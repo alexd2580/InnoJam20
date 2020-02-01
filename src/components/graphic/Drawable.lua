@@ -5,4 +5,4 @@
 -- Scale on y-axis
 -- Offset on x-axis
 -- Offset on y-axis
-return Component.create("Drawable", {"image", "index", "sx", "sy", "ox", "oy"} )
+return Component.create("Drawable", {"image", "index", "sx", "sy", "ox", "oy"}, {nil, 0, 0, 0, 0, 0})
