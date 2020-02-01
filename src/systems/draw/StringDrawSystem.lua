@@ -1,5 +1,3 @@
-local lume = require("lib/lume/lume")
-
 local StringDrawSystem = class("StringDrawSystem", System)
 
 function StringDrawSystem:draw()

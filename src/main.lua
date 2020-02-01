@@ -16,6 +16,7 @@ require("components/graphic/Color")
 require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
 require("components/graphic/DrawableText")
+require("components/graphic/DrawableSprite")
 require("components/particle/Particle")
 require("components/physic/Accelerating")
 require("components/physic/Body")
@@ -44,6 +45,7 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("circle", "data/img/circle.png")
+    resources:addSprite("circle", "data/img/good-player.png", 64, 64, 3)
 
     resources:load()
 

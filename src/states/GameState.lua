@@ -1,12 +1,12 @@
-local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, SpawnMe = Component.load(
-    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "SpawnMe"}
+local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, DrawableSprite, SpawnMe = Component.load(
+    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "DrawableSprite", "SpawnMe"}
 )
 local Vector = require("helper/Vector")
 
 -- Draw Systems
 local DrawSystem = require("systems/draw/DrawSystem")
 local CircleDrawSystem = require("systems/draw/CircleDrawSystem")
-
+local SpriteSystem = require("systems/draw/SpriteSystem")
 -- Particle Systems
 local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
 local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
@@ -37,7 +37,6 @@ function GameState:spawnEarth()
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
-
     earth:add(Earth())
 
     self.engine:addEntity(earth)
@@ -52,7 +51,8 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(SpawnMe(playerSize, position, nil))
 
     player:add(Color(r, g, b))
-    player:add(DrawableCircle(playerSize, true))
+    local playerSprite = resources.sprites.circle
+    player:add(DrawableSprite(playerSprite.quads, playerSprite.spriteSheet, 1))
 
     return player
 end
@@ -130,10 +130,13 @@ function GameState:load()
     -- Physic systems.
     self.engine:addSystem(SpawnSystem())
 
+    local spriteSystem = SpriteSystem()
+
     -- Draw systems.
     self.engine:addSystem(DrawSystem())
     self.engine:addSystem(CircleDrawSystem())
     self.engine:addSystem(ParticleDrawSystem())
+    self.engine:addSystem(spriteSystem, "draw")
 
     -- Logic systems.
     self.engine:addSystem(ParticleUpdateSystem())
@@ -144,6 +147,7 @@ function GameState:load()
     self.engine:addSystem(DevilControlSystem(), "update")
     self.engine:addSystem(AsteroidSpawnSystem(), "update")
     self.engine:addSystem(CleanupSystem(), "update")
+    self.engine:addSystem(spriteSystem, "update")
 
     self:spawnEarth()
     self:spawnAngel()
