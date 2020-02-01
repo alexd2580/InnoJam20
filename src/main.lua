@@ -6,10 +6,12 @@ lovetoys = require("lib/lovetoys")
 lovetoys.initialize({globals = true, debug = true})
 
 -- Require all components once to load them into the registry
-require("components/game/Angel")
-require("components/game/Asteroid")
-require("components/game/Devil")
-require("components/game/Earth")
+require("components/gameplay/Angel")
+require("components/gameplay/Asteroid")
+require("components/gameplay/Devil")
+require("components/gameplay/Earth")
+require("components/gameplay/JustSpawned")
+require("components/gameplay/ReadyForCleanup")
 require("components/graphic/Color")
 require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
@@ -22,6 +24,9 @@ require("components/physic/CountingDown")
 -- Framework Requirements
 require("core/Stackhelper")
 require("core/Resources")
+
+-- Helper includes
+require("helper/tables")
 
 local MenuState = require("states/MenuState")
 
