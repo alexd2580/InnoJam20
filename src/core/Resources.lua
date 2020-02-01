@@ -5,13 +5,13 @@ function Resources:initialize()
     self.musicQueue = {}
     self.soundQueue = {}
     self.fontQueue= {}
-    self.animationQueue= {}
+    self.spriteQueue= {}
 
     self.images = {}
     self.music = {}
     self.sounds = {}
     self.fonts = {}
-    self.animations = {}
+    self.sprites = {}
 end
 
 function Resources:addImage(name, src)
@@ -30,8 +30,8 @@ function Resources:addFont(name, src, size)
     self.fontQueue[name] = {src, size}
 end
 
-function Resources:addAnimation(name, src, width, height, duration)
-    self.animationQueue[name] = {
+function Resources:addSprite(name, src, width, height, duration)
+    self.spriteQueue[name] = {
         path = "data/img/good-player.png",
         width = 64,
         height = 64,
@@ -59,23 +59,23 @@ function Resources:load(threaded)
         self.imageQueue[name] = nil
     end
 
-    for name, data in pairs(self.animationQueue) do
-        local animationImage = love.graphics.newImage(data.path)
-        self.animations[name] = {
-            quads = loadAnimation(
-            animationImage,
+    for name, data in pairs(self.spriteQueue) do
+        local spriteImage = love.graphics.newImage(data.path)
+        self.sprites[name] = {
+            quads = loadSprite(
+            spriteImage,
             data.width,
             data.height,
             data.duration
         ),
-        spriteSheet = animationImage
+        spriteSheet = spriteImage
         }
-        
-        self.animationQueue[name] = nil
+
+        self.spriteQueue[name] = nil
     end
 end
 
-function loadAnimation(image, width, height, duration)
+function loadSprite(image, width, height, duration)
     local quads = {};
 
     for y = 0, image:getHeight() - height, height do

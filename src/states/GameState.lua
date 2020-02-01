@@ -1,5 +1,5 @@
-local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, DrawableAnimation = Component.load(
-    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "DrawableAnimation"}
+local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, DrawableSprite = Component.load(
+    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "DrawableSprite"}
 )
 
 -- Draw Systems
@@ -54,8 +54,8 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(Body(body))
 
     player:add(Color(r, g, b))
-    local playerSprite = resources.animations.circle
-    player:add(DrawableAnimation(playerSprite.quads, playerSprite.spriteSheets, 2))
+    local playerSprite = resources.sprites.circle
+    player:add(DrawableSprite(playerSprite.quads, playerSprite.spriteSheet, 1))
 
     return player
 end
@@ -104,22 +104,24 @@ function GameState:load()
     self.engine = Engine()
     self.eventmanager = EventManager()
 
+    local spriteSystem = SpriteSystem()
+
     -- Draw systems
     self.engine:addSystem(DrawSystem())
     self.engine:addSystem(CircleDrawSystem())
     self.engine:addSystem(ParticleDrawSystem())
-    self.engine:addSystem(SpriteSystem(), "draw")
+    self.engine:addSystem(spriteSystem, "draw")
 
     -- Logic systems
     self.engine:addSystem(ParticleUpdateSystem())
     self.engine:addSystem(ParticlePositionSyncSystem())
 
     -- Game systems
-    self.engine:addSystem(SpriteSystem(), "update")
     self.engine:addSystem(AngelControlSystem(), "update")
     self.engine:addSystem(DevilControlSystem(), "update")
     self.engine:addSystem(AsteroidSpawnSystem(), "update")
     self.engine:addSystem(CleanupSystem(), "update")
+    self.engine:addSystem(spriteSystem, "update")
 
     self:spawnEarth()
     self:spawnAngel()
