@@ -1,10 +1,12 @@
 local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
-      Caged, MaxVelocity, SpawnMe, Circle= Component.load({
+      Caged, MaxVelocity, SpawnMe, Circle,
+      Attracting = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
-        "Caged", "MaxVelocity", "SpawnMe", "Circle"
+        "Caged", "MaxVelocity", "SpawnMe", "Circle",
+        "Attracting"
 })
 
 -- Draw Systems
@@ -25,6 +27,7 @@ local CleanupSystem = require("systems/gameplay/CleanupSystem")
 local SpawnSystem = require("systems/physic/SpawnSystem")
 
 -- Physics Systems
+local GravitySystem = require("systems/physic/GravitySystem")
 local CageSystem = require("systems/physic/CageSystem")
 local MaxVelocitySystem = require("systems/physic/MaxVelocitySystem")
 
@@ -49,6 +52,7 @@ function GameState:spawnEarth()
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
+    earth:add(Attracting(20, 500))
 
     self.engine:addEntity(earth)
 end
@@ -163,6 +167,7 @@ function GameState:load()
     self.engine:addSystem(CleanupSystem())
     self.engine:addSystem(spriteSystem, "update")
         -- Physics
+    self.engine:addSystem(GravitySystem())
     self.engine:addSystem(SpawnSystem())
     self.engine:addSystem(CageSystem())
     self.engine:addSystem(MaxVelocitySystem())

@@ -25,6 +25,7 @@ require("components/physic/CountingDown")
 require("components/physic/SpawnMe")
 require("components/physic/Caged")
 require("components/physic/MaxVelocity")
+require("components/physic/Attracting")
 
 -- Framework Requirements
 require("core/Stackhelper")
