@@ -21,37 +21,55 @@ local KeyPressed = require("events/KeyPressed")
 local State = require("core/State")
 local GameState = class("GameState", State)
 
-function GameState:spawnAngel()
-    local angel = Entity()
 
-    local startX, startY = 200, 200
+function GameState:spawnEarth()
+    local earth = Entity()
+
+    local earthSize = 150
+    local startX, startY = 1920 / 2, 1080 / 2
     local body = love.physics.newBody(self.world, startX, startY, "dynamic")
-    local shape = love.physics.newCircleShape(20)
+    local shape = love.physics.newCircleShape(earthSize)
     local fixture = love.physics.newFixture(body, shape)
-    angel:add(Body(body))
+    earth:add(Body(body))
 
+    earth:add(Color(0.2, 0.5, 0.2))
+    earth:add(DrawableCircle(earthSize, true))
+
+    self.engine:addEntity(earth)
+end
+
+
+function GameState:buildBasePlayer(startX, startY, r, g, b)
+    local player = Entity()
+
+    local playerSize = 40
+    local body = love.physics.newBody(self.world, startX, startY, "dynamic")
+    local shape = love.physics.newCircleShape(playerSize)
+    local fixture = love.physics.newFixture(body, shape)
+    player:add(Body(body))
+
+    player:add(Color(r, g, b))
+    player:add(DrawableCircle(playerSize, true))
+
+    return player
+end
+
+
+function GameState:spawnAngel()
+    local startX, startY = 200, 200
+    local angel = self:buildBasePlayer(startX, startY, 0.8, 0.8, 0.8)
     angel:add(Angel())
-    angel:add(Color(0.8, 0.8, 0.8))
-    angel:add(DrawableCircle(50, true))
-
     self.engine:addEntity(angel)
 end
 
+
 function GameState:spawnDevil()
-    local devil = Entity()
-
     local startX, startY = 300, 300
-    local body = love.physics.newBody(self.world, startX, startY, "dynamic")
-    local shape = love.physics.newCircleShape(20)
-    local fixture = love.physics.newFixture(body, shape)
-    devil:add(Body(body))
-
+    local devil = self:buildBasePlayer(startX, startY, 0.8, 0.2, 0.2)
     devil:add(Devil())
-    devil:add(Color(0.8, 0.2, 0.2))
-    devil:add(DrawableCircle(50, true))
-
     self.engine:addEntity(devil)
 end
+
 
 function GameState:load()
     self.world = love.physics.newWorld(0, 0, true)
@@ -74,6 +92,7 @@ function GameState:load()
     self.engine:addSystem(DevilControlSystem(), "update")
     self.engine:addSystem(AsteroidSpawnSystem(), "update")
 
+    self:spawnEarth()
     self:spawnAngel()
     self:spawnDevil()
 end
