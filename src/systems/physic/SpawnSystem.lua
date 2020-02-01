@@ -3,12 +3,6 @@ local Body, SpawneMe = Component.load({"Body", "SpawnMe"})
 
 local SpawnSystem = class("SpawnSystem", System)
 
-
-function SpawnSystem:initialize()
-    System.initialize(self)
-end
-
-
 function SpawnSystem:update(dt)
     local world = stack:current().world
     local engine = stack:current().engine
@@ -24,6 +18,10 @@ function SpawnSystem:update(dt)
         fixture:setUserData(entity)
         entity:add(Body(body))
 
+        -- Apply linear dampening to slow down the entity.
+        if spawnMe.damping ~= nil then
+            body:setLinearDamping(spawnMe.damping)
+        end
 
         -- Apply velocity in case when given.
         if spawnMe.motion then
