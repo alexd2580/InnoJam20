@@ -1,5 +1,5 @@
 local Vector = require("helper/Vector")
-local Body, Color, DrawableCircle = Component.load({"Body", "Color", "DrawableCircle"})
+local Asteroid, Body, Color, DrawableCircle = Component.load({"Asteroid", "Body", "Color", "DrawableCircle"})
 local AsteroidSpawnSystem = class("AsteroidSpawnSystem", System)
 
 function AsteroidSpawnSystem:initialize()
@@ -40,6 +40,7 @@ function AsteroidSpawnSystem:update(dt)
         local body = love.physics.newBody(world, position.x, position.y, "dynamic")
         local shape = love.physics.newCircleShape(20)
         local fixture = love.physics.newFixture(body, shape)
+        fixture:setUserData(asteroid)
         asteroid:add(Body(body))
 
         local velocity = math.random(100, 200)
@@ -50,6 +51,8 @@ function AsteroidSpawnSystem:update(dt)
         -- Add drawing stuff
         asteroid:add(DrawableCircle(20, true))
         asteroid:add(Color(255, 255, 0))
+
+        asteroid:add(Asteroid())
 
         engine:addEntity(asteroid)
     end

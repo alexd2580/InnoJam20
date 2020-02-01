@@ -1,4 +1,6 @@
-local Angel, Body, Color, Devil, DrawableCircle = Component.load({"Angel", "Body", "Color", "Devil", "DrawableCircle"})
+local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle = Component.load(
+    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle"}
+)
 
 -- Draw Systems
 local DrawSystem = require("systems/draw/DrawSystem")
@@ -30,10 +32,13 @@ function GameState:spawnEarth()
     local body = love.physics.newBody(self.world, startX, startY, "dynamic")
     local shape = love.physics.newCircleShape(earthSize)
     local fixture = love.physics.newFixture(body, shape)
+    fixture:setUserData(earth)
     earth:add(Body(body))
 
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
+
+    earth:add(Earth())
 
     self.engine:addEntity(earth)
 end
@@ -71,9 +76,29 @@ function GameState:spawnDevil()
 end
 
 
+function GameState.handleEarthAsteroidCollision(earth, asteroid, contact, normal, tangent)
+    asteroid:get("Body").body:destroy()
+    stack:current().engine:removeEntity(asteroid)
+end
+
+
+function GameState.onCollide(a, b, contact, normal, tangent)
+    local aEntity, bEntity = a:getUserData(), b:getUserData()
+    if not aEntity or not bEntity then
+        return
+    end
+    if aEntity:has("Earth") and bEntity:has("Asteroid") then
+        GameState.handleEarthAsteroidCollision(aEntity, bEntity, contact, normal, tangent)
+    elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
+        -- TODO reverse tangent and normal?
+        GameState.handleEarthAsteroidCollision(bEntity, aEntity, contact, normal, tangent)
+    end
+end
+
+
 function GameState:load()
     self.world = love.physics.newWorld(0, 0, true)
-    local thing = love.physics.newBody(self.world, 100, 100, "dynamic")
+    self.world:setCallbacks(nil, nil, nil, self.onCollide)
 
     self.engine = Engine()
     self.eventmanager = EventManager()

@@ -1,6 +1,6 @@
 local playerControls = {}
 
-local IMPULSE = 70
+local IMPULSE = 100
 local MAX_VELOCITY = 500
 
 function playerControls.applyImpulseFromInput(body, u, d, l, r)

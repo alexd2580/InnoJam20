@@ -7,7 +7,9 @@ lovetoys.initialize({globals = true, debug = true})
 
 -- Require all components once to load them into the registry
 require("components/game/Angel")
+require("components/game/Asteroid")
 require("components/game/Devil")
+require("components/game/Earth")
 require("components/graphic/Color")
 require("components/graphic/Drawable")
 require("components/graphic/DrawableCircle")
