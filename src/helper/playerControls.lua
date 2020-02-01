@@ -1,7 +1,6 @@
 local playerControls = {}
 
 local IMPULSE = 100
-local MAX_VELOCITY = 500
 
 function playerControls.applyImpulseFromInput(body, u, d, l, r)
     local x, y = 0, 0
@@ -25,11 +24,6 @@ function playerControls.applyImpulseFromInput(body, u, d, l, r)
         y = y / len
 
         body:applyLinearImpulse(x * IMPULSE, y * IMPULSE)
-        vx, vy = body:getLinearVelocity()
-        v = math.sqrt(vx * vx + vy * vy)
-        if v > MAX_VELOCITY then
-            body:setLinearVelocity(vx / v * MAX_VELOCITY, vy / v * MAX_VELOCITY)
-        end
     end
 end
 

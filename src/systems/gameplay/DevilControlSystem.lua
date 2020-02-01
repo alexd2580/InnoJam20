@@ -10,7 +10,7 @@ function DevilControlSystem:update(dt)
 end
 
 function DevilControlSystem:requires()
-    return {"Devil"}
+    return {"Devil", "Body"}
 end
 
 return DevilControlSystem

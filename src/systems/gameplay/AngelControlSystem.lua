@@ -10,7 +10,7 @@ function AngelControlSystem:update(dt)
 end
 
 function AngelControlSystem:requires()
-    return {"Angel"}
+    return {"Angel", "Body"}
 end
 
 return AngelControlSystem

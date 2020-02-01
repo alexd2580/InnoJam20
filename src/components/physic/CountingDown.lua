@@ -1,2 +1,2 @@
 -- A simple component for creating countdowns
-return Component.create("TimerSystem", {"event", "time"})
+return Component.create("CountingDown", {"event", "time"})

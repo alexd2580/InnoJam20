@@ -1,12 +1,17 @@
-local Angel, Asteroid, Body, Color, Devil, Earth, DrawableCircle, DrawableSprite, SpawnMe = Component.load(
-    {"Angel", "Asteroid", "Body", "Color", "Devil", "Earth", "DrawableCircle", "DrawableSprite", "SpawnMe"}
-)
 local Vector = require("helper/Vector")
+local Angel, Asteroid, Body, Color,
+      Devil, Earth, DrawableCircle, DrawableSprite,
+      Caged, MaxVelocity, SpawnMe = Component.load({
+        "Angel", "Asteroid", "Body", "Color",
+        "Devil", "Earth", "DrawableCircle", "DrawableSprite",
+        "Caged", "MaxVelocity", "SpawnMe"
+})
 
 -- Draw Systems
 local DrawSystem = require("systems/draw/DrawSystem")
 local CircleDrawSystem = require("systems/draw/CircleDrawSystem")
 local SpriteSystem = require("systems/draw/SpriteSystem")
+
 -- Particle Systems
 local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
 local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
@@ -18,6 +23,10 @@ local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
 local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
 local CleanupSystem = require("systems/gameplay/CleanupSystem")
 local SpawnSystem = require("systems/physic/SpawnSystem")
+
+-- Physics Systems
+local CageSystem = require("systems/physic/CageSystem")
+local MaxVelocitySystem = require("systems/physic/MaxVelocitySystem")
 
 -- Events
 local KeyPressed = require("events/KeyPressed")
@@ -38,6 +47,8 @@ function GameState:spawnEarth()
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthSize, true))
     earth:add(Earth())
+    earth:add(Caged(100, 100))
+    earth:add(MaxVelocity(300))
 
     self.engine:addEntity(earth)
 end
@@ -49,6 +60,8 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     local playerSize = 40
     local position = Vector(startX, startY)
     player:add(SpawnMe(playerSize, position, nil))
+    player:add(Caged(100, 100))
+    player:add(MaxVelocity(500))
 
     player:add(Color(r, g, b))
     local playerSprite = resources.sprites.circle
@@ -128,26 +141,29 @@ function GameState:load()
     self.eventmanager = EventManager()
 
     -- Physic systems.
-    self.engine:addSystem(SpawnSystem())
 
     local spriteSystem = SpriteSystem()
 
-    -- Draw systems.
+    -- Draw systems
+    self.engine:addSystem(ParticleDrawSystem())
     self.engine:addSystem(DrawSystem())
     self.engine:addSystem(CircleDrawSystem())
-    self.engine:addSystem(ParticleDrawSystem())
     self.engine:addSystem(spriteSystem, "draw")
 
-    -- Logic systems.
+    -- Update
+        -- Particle
     self.engine:addSystem(ParticleUpdateSystem())
     self.engine:addSystem(ParticlePositionSyncSystem())
-
-    -- Game systems.
-    self.engine:addSystem(AngelControlSystem(), "update")
-    self.engine:addSystem(DevilControlSystem(), "update")
-    self.engine:addSystem(AsteroidSpawnSystem(), "update")
-    self.engine:addSystem(CleanupSystem(), "update")
+        -- Gameplay
+    self.engine:addSystem(AngelControlSystem())
+    self.engine:addSystem(DevilControlSystem())
+    self.engine:addSystem(AsteroidSpawnSystem())
+    self.engine:addSystem(CleanupSystem())
     self.engine:addSystem(spriteSystem, "update")
+        -- Physics
+    self.engine:addSystem(SpawnSystem())
+    self.engine:addSystem(CageSystem())
+    self.engine:addSystem(MaxVelocitySystem())
 
     self:spawnEarth()
     self:spawnAngel()

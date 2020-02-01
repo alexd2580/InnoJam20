@@ -24,6 +24,7 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector)
     asteroid:add(Color(255, 255, 0))
 
     asteroid:add(Asteroid(size))
+    asteroid:add(JustSpawned())
 
     engine:addEntity(asteroid)
     return asteroid
@@ -58,7 +59,6 @@ function AsteroidSpawnSystem:update(dt)
         motionVector = motionVector:multiply(velocity)
 
         local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, 20, motionVector)
-        asteroid:add(JustSpawned())
     end
 end
 
