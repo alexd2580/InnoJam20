@@ -51,6 +51,9 @@ function love.load()
 
     -- Add your resources here:
     resources:addImage("background", "data/img/deepfield.jpg")
+    resources:addImage("stoneboi", "data/img/stone-asteroid.png")
+    resources:addImage("waterboi", "data/img/water-asteroid.png")
+    resources:addImage("explodyboi", "data/img/explody-boi.png")
     resources:addImage("deepfield", "data/img/bg.png")
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
