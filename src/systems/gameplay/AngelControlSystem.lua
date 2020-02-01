@@ -6,6 +6,7 @@ function AngelControlSystem:update(dt)
     for index, entity in pairs(self.targets) do
         local body = entity:get("Body").body
         playerControls.applyImpulseFromInput(body, "up", "down", "left", "right")
+        playerControls.addGravityComponents(entity, "m", "n")
     end
 end
 
