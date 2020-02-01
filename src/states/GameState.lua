@@ -67,7 +67,6 @@ function GameState:buildBasePlayer(startX, startY, r, g, b)
     player:add(Caged(100, 100))
     player:add(MaxVelocity(500))
     player:add(Circle(playerSize))
-    player:add(DrawableCircle(playerSize, true))
 
     player:add(Color(r, g, b))
 
