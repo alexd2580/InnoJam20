@@ -11,19 +11,22 @@ function GravitySystem:update(dt)
         -- Check for all asteroids, if they are in range
         for _, asteroid in pairs(asteroids) do
             -- Check if the body exists (important because of SpawnSystem)
-            if asteroid:get("Body") ~= nil then
-                local asteroidPosition = asteroid:get("Body"):getPositionVector()
+            local asteroidBody = asteroid:get("Body")
+            if asteroidBody ~= nil then
+                local asteroidPosition = asteroidBody:getPositionVector()
                 local direction = entityPosition:subtract(asteroidPosition)
                 local distance = direction:length(entityPosition)
                 -- Check if the body is in range
-                if distance < attracting.radius then
+                local attractorRadius = body:getFixtures()[1]:getShape():getRadius()
+                local attractionRadius = attractorRadius + attracting.radius
+                if distance < attractionRadius then
                     -- Apply force linear to the distance to the center of the attracting entity
-                    local remainingForce = attracting.radius - distance
+                    local remainingForce = attractionRadius - distance
                     local forceVector = direction:getUnit():multiply(remainingForce)
                     if attracting.reverse then
                         forceVector = forceVector:multiply(-1)
                     end
-                    asteroid:get("Body").body:applyForce(forceVector.x, forceVector.y)
+                    asteroidBody.body:applyForce(forceVector.x, forceVector.y)
                 end
             end
         end

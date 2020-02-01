@@ -92,6 +92,19 @@ function GameState:spawnDevil()
 end
 
 
+function setEarthRadius(earth, newRadius)
+    local body = earth:get("Body").body
+    if newRadius < 1 then
+        body:destroy()
+        stack:current().engine:removeEntity(earth)
+        return false
+    end
+
+    local earthShape = body:getFixtures()[1]:getShape():setRadius(newRadius)
+    earth:get("DrawableCircle").radius = newRadius
+    return true
+end
+
 function GameState.handleAsteroidEarthCollision(
     asteroid, earth, earthToAsteroid, normalImpulse, tangentImpulse
 )
@@ -103,7 +116,7 @@ function GameState.handleAsteroidEarthCollision(
     body:destroy()
     stack:current().engine:removeEntity(asteroid)
 
-    local numShards = math.random(1, 5)
+    local numShards = math.random(3, 5)
     local asteroidArea = math.pi * asteroidRadius * asteroidRadius
     local shardArea = asteroidArea / numShards
     local shardRadius = math.floor(math.sqrt(shardArea / math.pi))
@@ -112,23 +125,34 @@ function GameState.handleAsteroidEarthCollision(
     local earthAntiCollision = earthToAsteroid:multiply(-0.5 * normalImpulse)
     earth:get("Body").body:applyLinearImpulse(earthAntiCollision.x, earthAntiCollision.y)
 
+    local earthShape = earth:get("Body").body:getFixtures()[1]:getShape()
+    local radius = earthShape:getRadius()
     if shardRadius > 0.5 then
+        local explodeFactor = 1.0
+        -- SHRINK
+        if normalImpulse > 400 then
+            local newRadius = math.sqrt((radius * radius * math.pi - 8 * asteroidArea) / math.pi)
+            if not setEarthRadius(earth, newRadius) then
+                return
+            end
+            explodeFactor = 0.5 + normalImpulse / 400
+        end
+
         local tangent = Vector(earthToAsteroid.y, -earthToAsteroid.x)
         local tangentV = tangent:multiply(tangentImpulse)
-        local normalV = earthToAsteroid:multiply(normalImpulse)
-        local impulse = tangentV:multiply(2.0 * shardEnergyFraction)
+        local normalV = earthToAsteroid:multiply(-1.5 * normalImpulse)
+        local impulse = tangentV:multiply(5.0 * shardEnergyFraction)
+        impulse = impulse:multiply(explodeFactor)
 
         for i = 1, numShards do
             local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
+            print(asteroidPosition.x, asteroidPosition.y, randOffset.x, randOffset.y, shardRadius, impulse.x, impulse.y)
             AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, nil, impulse)
         end
     else
-        local earthShape = earth:get("Body").body:getFixtures()[1]:getShape()
-        local radius = earthShape:getRadius()
-        local newRadius = math.sqrt((radius * radius * math.pi + 100 * asteroidArea) / math.pi)
-        earthShape:setRadius(newRadius)
-
-        earth:get("DrawableCircle").radius = newRadius
+        -- GROW
+        local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
+        setEarthRadius(earth, newRadius)
     end
 end
 
@@ -138,6 +162,10 @@ function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
     if not aEntity or not bEntity then
         return
     end
+    if aEntity:get("Body"):isDestroyed() or bEntity:get("Body"):isDestroyed() then
+        return
+    end
+
     local nx, ny = contact:getNormal()
     local bToA = Vector(nx, ny)
     if aEntity:has("Earth") and bEntity:has("Asteroid") then
@@ -156,7 +184,6 @@ function GameState:load()
     self.eventmanager = EventManager()
 
     -- Physic systems.
-
     local spriteSystem = SpriteSystem()
 
     -- Draw systems
