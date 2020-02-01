@@ -23,12 +23,13 @@ function SpriteSystem:draw()
 --        end
         local x, y = entity:get("Body").body:getPosition()
         local ox, oy = 0, 0
+        local sx, sy = 1, 1
         if entity:get("Circle") then
             local diameter = entity:get("Circle").radius*2
             sx = diameter/sprite.width
             sy = diameter/sprite.height
-            ox = diameter/2
-            oy = diameter/2
+            ox = sprite.width/2
+            oy = sprite.height/2
         end
         love.graphics.draw(
             sprite.spriteSheet, sprite.quads[spriteNum],
