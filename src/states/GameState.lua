@@ -161,7 +161,7 @@ function GameState.handleAsteroidEarthCollision(
 
     if asteroidType == "explodiboy" then
         -- Explode!
-        local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
+        local newRadius = math.sqrt((radius * radius * math.pi - 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
         return
     end
