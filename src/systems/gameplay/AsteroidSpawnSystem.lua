@@ -23,8 +23,9 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(DrawableCircle(size, false))
     asteroid:add(Color(255, 255, 0))
 
-    -- Add image 
-    local drawable = Drawable(image, 3, size, size, 0.8*size, 0.8*size)
+    -- Add image
+    local imageW, imageH = image:getWidth(), image:getHeight()
+    local drawable = Drawable(image, 3, nil, nil, imageW / 2, imageH / 2)
     asteroid:add(drawable)
 
     asteroid:add(Asteroid(size))
