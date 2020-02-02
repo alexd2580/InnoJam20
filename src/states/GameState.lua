@@ -145,8 +145,6 @@ function GameState.handleAsteroidEarthCollision(
     local asteroidX, asteroidY = body:getPosition()
     local asteroidPosition = Vector(asteroidX, asteroidY)
     local oldX, oldY = body:getPosition()
-    body:destroy()
-    stack:current().engine:removeEntity(asteroid)
 
     local numShards = math.random(3, 5)
     local asteroidArea = math.pi * asteroidRadius * asteroidRadius
@@ -164,8 +162,10 @@ function GameState.handleAsteroidEarthCollision(
         -- Explode!
         local newRadius = math.sqrt((radius * radius * math.pi - 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
-        return
     end
+
+    body:destroy()
+    stack:current().engine:removeEntity(asteroid)
 
     if asteroidType == "stoneboi" or asteroidType == "waterboi" then
         if shardRadius > 0.5 then

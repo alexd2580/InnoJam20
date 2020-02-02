@@ -33,7 +33,7 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(JustSpawned())
 
     if particleImage then
-        asteroid:add(Particle(particleImage, 1000, Vector(0, 0), {0.1, 1.5}, 100))
+        asteroid:add(Particle(particleImage, 10000, Vector(0, 0), {0.05, 0.5}))
     end
 
     engine:addEntity(asteroid)

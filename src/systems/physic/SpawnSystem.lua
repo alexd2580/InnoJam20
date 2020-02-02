@@ -11,27 +11,29 @@ function SpawnSystem:update(dt)
         local spawnMe = entity:get("SpawnMe")
 
         local x, y =  spawnMe.position.x, spawnMe.position.y
-        local body = love.physics.newBody(world, x, y, "dynamic")
+        if x and y then
+            local body = love.physics.newBody(world, x, y, "dynamic")
 
-        local shape = love.physics.newCircleShape(spawnMe.size)
-        local fixture = love.physics.newFixture(body, shape)
-        fixture:setUserData(entity)
-        entity:add(Body(body))
+            local shape = love.physics.newCircleShape(spawnMe.size)
+            local fixture = love.physics.newFixture(body, shape)
+            fixture:setUserData(entity)
+            entity:add(Body(body))
 
-        -- Apply linear dampening to slow down the entity.
-        if spawnMe.damping ~= nil then
-            body:setLinearDamping(spawnMe.damping)
-        end
+            -- Apply linear dampening to slow down the entity.
+            if spawnMe.damping ~= nil then
+                body:setLinearDamping(spawnMe.damping)
+            end
 
-        -- Apply velocity in case when given.
-        if spawnMe.motion then
-            local mx, my = spawnMe.motion.x, spawnMe.motion.y
-            body:setLinearVelocity(mx, my)
-        end
+            -- Apply velocity in case when given.
+            if spawnMe.motion then
+                local mx, my = spawnMe.motion.x, spawnMe.motion.y
+                body:setLinearVelocity(mx, my)
+            end
 
-        if spawnMe.impulse then
-            local ix, iy = spawnMe.impulse.x, spawnMe.impulse.y
-            body:applyLinearImpulse(ix, iy)
+            if spawnMe.impulse then
+                local ix, iy = spawnMe.impulse.x, spawnMe.impulse.y
+                body:applyLinearImpulse(ix, iy)
+            end
         end
 
         entity:remove("SpawnMe")
