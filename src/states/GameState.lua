@@ -46,7 +46,7 @@ function GameState:spawnEarth()
     local earthSize = 150
     local startX, startY = 1920 / 2, 1080 / 2
     local position = Vector(startX, startY)
-    local drawable = Drawable(resources.images.planet, 1, 0.75, 0.75)
+    local drawable = Drawable(resources.images.planet, 5, 0.75, 0.75, 1.33333*earthSize, 1.333333*earthSize)
     earth:add(SpawnMe(earthSize, position, nil, 0.2))
     earth:add(Earth())
     earth:add(Caged(100, 100))

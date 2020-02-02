@@ -12,10 +12,12 @@ function DrawSystem:draw()
 
         local x, y = 0, 0
         local angle = 0
+        local diameter = 0 
         if entity:get("Body") then
             local body = entity:get("Body").body
             x, y = body:getPosition()
             angle = body:getAngle()
+            diameter = body:getFixtures()[1]:getShape():getRadius() * 2
         elseif entity:get("ImagePosition") then
             local position = entity:get("ImagePosition")
             x = position.x
@@ -23,9 +25,13 @@ function DrawSystem:draw()
         end
         local sx, sy = drawable.sx, drawable.sy
         if entity:get("Circle") then
-            local radius = entity:get("Circle").radius*2
-            sx = radius/drawable.image:getWidth()
-            sy = radius/drawable.image:getHeight()
+            local diameter = entity:get("Circle").radius*2
+            sx = diameter/drawable.image:getWidth()
+            sy = diameter/drawable.image:getHeight()
+        end
+        if drawable.image ~= nil and not entity:has("Parallax") then
+            sx = diameter/drawable.image:getWidth()
+            sy = diameter/drawable.image:getHeight()
         end
         love.graphics.draw(drawable.image, x, y, angle, sx, sy, drawable.ox, drawable.oy)
     end
