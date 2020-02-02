@@ -59,7 +59,7 @@ function love.load()
     resources:addImage("planet", "data/img/planet.png")
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
-
+    resources:addMusic("background", "data/sound/background.wav")
     resources:load()
 
     stack = StackHelper()

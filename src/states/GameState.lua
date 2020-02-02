@@ -67,7 +67,6 @@ end
 
 function GameState:buildBasePlayer(startX, startY, r, g, b)
     local player = Entity()
-
     local playerSize = 40
     local position = Vector(startX, startY)
     player:add(SpawnMe(playerSize, position, nil, 0.4))
@@ -232,6 +231,7 @@ function GameState:load()
     self.engine = Engine()
     self.eventmanager = EventManager()
 
+
     -- Physic systems.
     local spriteSystem = SpriteSystem()
 
@@ -262,6 +262,9 @@ function GameState:load()
     self:spawnEarth()
     self:spawnAngel()
     self:spawnDevil()
+
+    resources.music.background:isLooping(true)
+    resources.music.background:play()
 end
 
 function GameState:update(dt)
