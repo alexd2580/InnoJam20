@@ -166,6 +166,9 @@ function GameState.handleAsteroidEarthCollision(
         -- Explode!
         local newRadius = math.sqrt((radius * radius * math.pi - 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
+        resources.sounds.boom:stop()
+        --resources.sounds.boom:isLooping(true)
+        resources.sounds.boom:play()
         return
     end
 

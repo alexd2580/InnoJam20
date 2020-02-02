@@ -4,4 +4,5 @@
 
 
 Music taken:
-[OpenGameArt](https://opengameart.org/content/wheres-my-spaceship)
+[BackgroundMusic](https://opengameart.org/content/wheres-my-spaceship)
+[ExplosionSound](https://opengameart.org/content/muffled-distant-explosion)
