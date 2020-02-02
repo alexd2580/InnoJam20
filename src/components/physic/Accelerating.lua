@@ -1,4 +1,4 @@
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 
 local Accelerating = Component.create("Accelerating")
 
