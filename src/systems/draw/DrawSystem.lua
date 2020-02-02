@@ -13,8 +13,8 @@ function DrawSystem:draw()
         local x, y = 0, 0
         local angle = 0
         if entity:get("Body") then
-            local body = entity:get("Body")
-            x, y = body.body:getPosition()
+            local body = entity:get("Body").body
+            x, y = body:getPosition()
             angle = body:getAngle()
         elseif entity:get("ImagePosition") then
             local position = entity:get("ImagePosition")
