@@ -105,15 +105,17 @@ end
 
 function setEarthRadius(earth, newRadius)
     local body = earth:get("Body").body
-    print(newRadius)
-    if newRadius ~= newRadius or newRadius < 30 or newRadius > 150 then
-        stack:pop()
-        return
-        -- body:destroy()
-        -- stack:current().engine:removeEntity(earth)
-        -- -- print("Remove earth")
-        -- return false
+    if newRadius ~= newRadius or newRadius < 50 then
+        newRadius = 50
     end
+    -- if  or newRadius >  then
+    --     stack:pop()
+    --     return
+    --     -- body:destroy()
+    --     -- stack:current().engine:removeEntity(earth)
+    --     -- -- print("Remove earth")
+    --     -- return false
+    -- end
 
     local earthShape = body:getFixtures()[1]:getShape():setRadius(newRadius)
     earth:get("DrawableCircle").radius = newRadius
