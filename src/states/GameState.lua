@@ -123,7 +123,7 @@ function GameState:spawnBackground()
     self.engine:addEntity(background)
 
     local deepfield = Entity()
-    drawable = Drawable(resources.images.deepfield, 5)
+    drawable = Drawable(resources.images.deepfield, 3)
     deepfield:add(ImagePosition(0, 0))
     deepfield:add(Parallax(50))
     deepfield:add(drawable)
