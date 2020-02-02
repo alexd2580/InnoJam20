@@ -60,7 +60,10 @@ function GameState:spawnEarth()
     earth:add(drawable)
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthRadius, false))
+    
 
+    resources.sounds.boom:setVolume(1.0)
+    resources.sounds.splash:setVolume(0.8)
     -- resize
 
     self.engine:addEntity(earth)
@@ -83,7 +86,7 @@ end
 
 
 function GameState:spawnAngel()
-    local startX, startY = 200, 200
+    local startX, startY = 100, 100
     local angel = self:buildBasePlayer(startX, startY, 0.8, 0.8, 0.8)
     angel:add(Angel())
     angel:add(DrawableSprite(resources.sprites.good, 1))
@@ -92,7 +95,7 @@ end
 
 
 function GameState:spawnDevil()
-    local startX, startY = 300, 300
+    local startX, startY = 1700, 980
     local devil = self:buildBasePlayer(startX, startY, 0.8, 0.2, 0.2)
     devil:add(Devil())
     devil:add(DrawableSprite(resources.sprites.bad, 1))
@@ -200,7 +203,6 @@ function GameState.handleAsteroidEarthCollision(
            -- GROW
             local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
             if asteroidType == "waterboi" then
-                print("Splash!")
                 resources.sounds.splash:stop()
                 resources.sounds.splash:play()
             end
@@ -272,6 +274,7 @@ function GameState:load()
     self:spawnAngel()
     self:spawnDevil()
 
+    resources.music.background:setVolume(0.5)
     resources.music.background:isLooping(true)
     resources.music.background:play()
 end

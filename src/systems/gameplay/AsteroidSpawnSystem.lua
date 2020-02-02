@@ -21,8 +21,8 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(SpawnMe(size, position, motionVector, nil, impulse))
 
     -- Add drawing stuff
-    asteroid:add(DrawableCircle(size, false))
-    asteroid:add(Color(255, 255, 0))
+    -- asteroid:add(DrawableCircle(size, false))
+    -- asteroid:add(Color(255, 255, 0))
 
     -- Add image
     local imageW, imageH = image:getWidth(), image:getHeight()
