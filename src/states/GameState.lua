@@ -165,7 +165,6 @@ function GameState.handleAsteroidEarthCollision(
         local newRadius = math.sqrt((radius * radius * math.pi - 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
         resources.sounds.boom:stop()
-        --resources.sounds.boom:isLooping(true)
         resources.sounds.boom:play()
         return
     end
@@ -198,8 +197,13 @@ function GameState.handleAsteroidEarthCollision(
                 newAsteroid:get("Asteroid").type = asteroidType
             end
         else
-            -- GROW
+           -- GROW
             local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
+            if asteroidType == "waterboi" then
+                print("Splash!")
+                resources.sounds.splash:stop()
+                resources.sounds.splash:play()
+            end
             setEarthRadius(earth, newRadius)
         end
     end
