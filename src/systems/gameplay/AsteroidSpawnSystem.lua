@@ -1,7 +1,7 @@
 local Vector = require("helper/Vector")
 local
-    Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, SpawnMe = Component.load(
-    {"Asteroid", "Body", "Color", "DrawableCircle", "Drawable", "JustSpawned", "SpawnMe"}
+    Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, Particle, SpawnMe = Component.load(
+    {"Asteroid", "Body", "Color", "DrawableCircle", "Drawable", "JustSpawned", "Particle", "SpawnMe"}
 )
 
 local AsteroidSpawnSystem = class("AsteroidSpawnSystem", System)
@@ -32,6 +32,8 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(Asteroid(size))
     asteroid:add(JustSpawned())
 
+    asteroid:add(Particle(image, 1000, Vector(0, 0), {2, 10}, 100))
+
     engine:addEntity(asteroid)
     return asteroid
 end
@@ -44,16 +46,16 @@ function AsteroidSpawnSystem:update(dt)
         local x, y = math.random(-200, 200), math.random(-200, 200)
         -- Spawn the asteroids at least -+50 left/right outside the viewport.
         if x < 0 then
-            x = -50 + x
+            x = x - 50
         else
-            x = 1970 + x
+            x = x + 1970
         end
 
         -- Spawn the asteroids at least -+50 top/down outside the viewport.
         if y < 0 then
-            y = -50 + x
+            y = y - 50
         else
-            y = 1130 + x
+            y = y + 1130
         end
 
         local position = Vector(x, y)

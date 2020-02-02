@@ -2,11 +2,13 @@ local Vector = require("helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
       Caged, MaxVelocity, SpawnMe, Circle,
-      Attracting, ImagePosition, Drawable, Parallax = Component.load({
+      Attracting, ImagePosition, Drawable, Parallax,
+      Particle = Component.load({
         "Angel", "Asteroid", "Body", "Color",
         "Devil", "Earth", "DrawableCircle", "DrawableSprite",
         "Caged", "MaxVelocity", "SpawnMe", "Circle",
-        "Attracting", "ImagePosition", "Drawable", "Parallax"
+        "Attracting", "ImagePosition", "Drawable", "Parallax",
+        "Particle"
 })
 
 -- Draw Systems
@@ -58,6 +60,8 @@ function GameState:spawnEarth()
     earth:add(drawable)
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthRadius, false))
+
+    earth:add(Particle(resources.images.planet, 1000, Vector(100, 100), {2, 10}, 100))
 
     -- resize
 
@@ -236,10 +240,10 @@ function GameState:load()
     local spriteSystem = SpriteSystem()
 
     -- Draw systems
-    self.engine:addSystem(ParticleDrawSystem())
     self.engine:addSystem(DrawSystem())
     self.engine:addSystem(CircleDrawSystem())
     self.engine:addSystem(spriteSystem, "draw")
+    self.engine:addSystem(ParticleDrawSystem())
 
     -- Update
         -- Particle
