@@ -1,5 +1,6 @@
 local Vector = require("helper/Vector")
-local Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, SpawnMe = Component.load(
+local
+    Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, SpawnMe = Component.load(
     {"Asteroid", "Body", "Color", "DrawableCircle", "Drawable", "JustSpawned", "SpawnMe"}
 )
 
@@ -63,7 +64,22 @@ function AsteroidSpawnSystem:update(dt)
         motionVector = motionVector:getUnit()
         motionVector = motionVector:multiply(velocity)
 
-        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, 20, motionVector, nil, resources.images.explodyboi)
+        local randomType = math.random(1, 3)
+        local image, type
+        if randomType == 1 then
+            image = resources.images.explodyboi
+            type = "explodiboy"
+        elseif randomType == 2 then
+            image = resources.images.stoneboi
+            type = "stoneboi"
+        elseif randomType == 3 then
+            image = resources.images.waterboi
+            type = "waterboi"
+        end
+
+        local size = math.random(15, 25)
+        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, nil, image)
+        asteroid:get("Asteroid").type = type
     end
 end
 

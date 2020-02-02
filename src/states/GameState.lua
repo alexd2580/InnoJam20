@@ -104,7 +104,7 @@ function setEarthRadius(earth, newRadius)
     if newRadius < 10 then
         body:destroy()
         stack:current().engine:removeEntity(earth)
-        print("Remove earth")
+        -- print("Remove earth")
         return false
     end
 
@@ -135,7 +135,11 @@ end
 function GameState.handleAsteroidEarthCollision(
     asteroid, earth, earthToAsteroid, normalImpulse, tangentImpulse
 )
-    local asteroidRadius = asteroid:get("Asteroid").size
+    local asteroidComponent = asteroid:get("Asteroid")
+    local asteroidRadius = asteroidComponent.size
+    local asteroidType = asteroidComponent.type
+    local asteroidImage = asteroid:get("Drawable").image
+
     local body = asteroid:get("Body").body
     local asteroidX, asteroidY = body:getPosition()
     local asteroidPosition = Vector(asteroidX, asteroidY)
@@ -154,32 +158,46 @@ function GameState.handleAsteroidEarthCollision(
 
     local earthShape = earth:get("Body").body:getFixtures()[1]:getShape()
     local radius = earthShape:getRadius()
-    if shardRadius > 0.5 then
-        local explodeFactor = 1.0
-        -- SHRINK
-        if normalImpulse > 400 then
-            local newRadius = math.sqrt((radius * radius * math.pi - 8 * asteroidArea) / math.pi)
-            if not setEarthRadius(earth, newRadius) then
-                return
-            end
-            explodeFactor = 0.5 + normalImpulse / 400
-        end
 
-        local tangent = Vector(earthToAsteroid.y, -earthToAsteroid.x)
-        local tangentV = tangent:multiply(tangentImpulse)
-        local normalV = earthToAsteroid:multiply(-1.5 * normalImpulse)
-        local impulse = tangentV:multiply(5.0 * shardEnergyFraction)
-        impulse = impulse:multiply(explodeFactor)
-
-        for i = 1, numShards do
-            local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
-            print(asteroidPosition.x, asteroidPosition.y, randOffset.x, randOffset.y, shardRadius, impulse.x, impulse.y)
-            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, nil, impulse, resources.images.explodyboi)
-        end
-    else
-        -- GROW
+    if asteroidType == "explodiboy" then
+        -- Explode!
         local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
+        return
+    end
+
+    if asteroidType == "stoneboi" or asteroidType == "waterboi" then
+        if shardRadius > 0.5 then
+            local explodeFactor = 1.0
+            -- SHRINK
+            local shrinkThreshold = 600
+            if normalImpulse > shrinkThreshold then
+                local newRadius = math.sqrt((radius * radius * math.pi - 8 * asteroidArea) / math.pi)
+                if not setEarthRadius(earth, newRadius) then
+                    return
+                end
+                explodeFactor = 0.5 + normalImpulse / shrinkThreshold
+            end
+
+            local tangent = Vector(earthToAsteroid.y, -earthToAsteroid.x)
+            local tangentV = tangent:multiply(tangentImpulse)
+            local normalV = earthToAsteroid:multiply(-1.5 * normalImpulse)
+            local impulse = tangentV:multiply(5.0 * shardEnergyFraction)
+            impulse = impulse:multiply(explodeFactor)
+
+            for i = 1, numShards do
+                local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
+                -- print(asteroidPosition.x, asteroidPosition.y, randOffset.x, randOffset.y, shardRadius, impulse.x, impulse.y)
+                local newAsteroid = AsteroidSpawnSystem.spawnAsteroid(
+                    asteroidPosition:add(randOffset), shardRadius, nil, impulse, asteroidImage
+                )
+                newAsteroid:get("Asteroid").type = asteroidType
+            end
+        else
+            -- GROW
+            local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
+            setEarthRadius(earth, newRadius)
+        end
     end
 end
 
@@ -195,13 +213,13 @@ function GameState.onCollide(a, b, contact, normalImpulse, tangentImpulse)
 
 
     local nx, ny = contact:getNormal()
-    print("normal", nx, ny)
+    -- print("normal", nx, ny)
     local bToA = Vector(nx, ny)
     if aEntity:has("Earth") and bEntity:has("Asteroid") then
-        print(bEntity:get("Body").body:getPosition())
+        -- print(bEntity:get("Body").body:getPosition())
         GameState.handleAsteroidEarthCollision(bEntity, aEntity, bToA:multiply(-1), normalImpulse, tangentImpulse)
     elseif bEntity:has("Earth") and aEntity:has("Asteroid") then
-        print(aEntity:get("Body").body:getPosition())
+        -- print(aEntity:get("Body").body:getPosition())
         GameState.handleAsteroidEarthCollision(aEntity, bEntity, bToA, normalImpulse, tangentImpulse)
     end
 end

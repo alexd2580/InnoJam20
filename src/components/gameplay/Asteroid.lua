@@ -1,1 +1,1 @@
-return Component.create("Asteroid", {"size"})
+return Component.create("Asteroid", {"size", "type"})
