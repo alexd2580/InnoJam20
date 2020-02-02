@@ -1,5 +1,5 @@
 local CageSystem = class("CageSystem", System)
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 
 function CageSystem:update(dt)
     for index, entity in pairs(self.targets) do

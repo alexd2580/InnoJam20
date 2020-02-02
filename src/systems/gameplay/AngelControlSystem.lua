@@ -1,4 +1,4 @@
-local playerControls = require("helper/playerControls")
+local playerControls = require("src/helper/playerControls")
 
 local AngelControlSystem = class("AngelControlSystem", System)
 

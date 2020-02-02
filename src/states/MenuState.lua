@@ -1,11 +1,11 @@
-local weather = require("lib/weather")
+local weather = require("src/lib/weather")
 
-local GameState = require("states/GameState")
+local GameState = require("src/states/GameState")
 
-local KeyPressed = require("events/KeyPressed")
+local KeyPressed = require("src/events/KeyPressed")
 
 -- State superclass
-local State = require("core/State")
+local State = require("src/core/State")
 local MenuState = class("MenuState", State)
 
 function MenuState:load()

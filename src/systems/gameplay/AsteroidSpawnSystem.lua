@@ -1,4 +1,4 @@
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 local
     Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, Particle, SpawnMe = Component.load(
     {"Asteroid", "Body", "Color", "DrawableCircle", "Drawable", "JustSpawned", "Particle", "SpawnMe"}

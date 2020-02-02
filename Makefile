@@ -1,36 +1,36 @@
-.PHONY: default clean build run lib getwindowlib getmaclib package-linux package-windows package-mac package
+.PHONY: default clean build run lib package-linux package-windows package-osx package
 
-default: run
+foreplay_dir = "./foreplay"
+
+default: build run
 
 buildclean:
-	@[[ ! -e game.love ]] || rm game.love
+	rm -f $(foreplay_dir)/pkg/*.love
 
 clean:
-	@[[ ! -e game.love ]] || rm game.love
-	@[[ ! -e pkg ]] || rm -r pkg
-	@[[ ! -e lib ]] || rm -r lib
-	@[[ ! -e temp ]] || rm -r temp
+	rm -f $(foreplay_dir)/pkg/*.love
+	rm -rf $(foreplay_dir)/pkg
+	rm -rf $(foreplay_dir)/lib
 
 build: buildclean
-	@zip -q -r -0 game.love data/*
-	@cd src/ && zip -q -r ../game.love *
+	@$(foreplay_dir)/build.sh
 
-run: build
-	@love game.love
+run:
+	@love $(foreplay_dir)/pkg/*.love
 
 setup:
-	git submodule update --init
+	git submodule update --init --recursive
 
 package-linux: build
-	@./script/download.sh linux
-	@./script/package.sh linux
+	@$(foreplay_dir)/package.sh linux
 
 package-windows: build
-	@./script/download.sh windows
-	@./script/package.sh windows
+	@$(foreplay_dir)/package.sh windows
 
-package-mac: build
-	@./script/download.sh osx
-	@./script/package.sh osx
+package-osx: build
+	@$(foreplay_dir)/package.sh osx
 
-package: build package-linux package-windows package-mac
+subupdate:
+	git submodule foreach git pull origin master
+
+package: build package-linux package-windows package-osx

@@ -1,4 +1,4 @@
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 local Angel, Asteroid, Body, Color,
       Devil, Earth, DrawableCircle, DrawableSprite,
       Caged, MaxVelocity, SpawnMe, Circle,
@@ -12,33 +12,33 @@ local Angel, Asteroid, Body, Color,
 })
 
 -- Draw Systems
-local DrawSystem = require("systems/draw/DrawSystem")
-local CircleDrawSystem = require("systems/draw/CircleDrawSystem")
-local SpriteSystem = require("systems/draw/SpriteSystem")
+local DrawSystem = require("src/systems/draw/DrawSystem")
+local CircleDrawSystem = require("src/systems/draw/CircleDrawSystem")
+local SpriteSystem = require("src/systems/draw/SpriteSystem")
 
 -- Particle Systems
-local ParticleDrawSystem = require("systems/particle/ParticleDrawSystem")
-local ParticleUpdateSystem = require("systems/particle/ParticleUpdateSystem")
-local ParticlePositionSyncSystem = require("systems/particle/ParticlePositionSyncSystem")
+local ParticleDrawSystem = require("src/systems/particle/ParticleDrawSystem")
+local ParticleUpdateSystem = require("src/systems/particle/ParticleUpdateSystem")
+local ParticlePositionSyncSystem = require("src/systems/particle/ParticlePositionSyncSystem")
 
 -- Game Systems
-local AngelControlSystem = require("systems/gameplay/AngelControlSystem")
-local DevilControlSystem = require("systems/gameplay/DevilControlSystem")
-local AsteroidSpawnSystem = require("systems/gameplay/AsteroidSpawnSystem")
-local CleanupSystem = require("systems/gameplay/CleanupSystem")
-local ParallaxSystem = require("systems/gameplay/ParallaxSystem")
-local SpawnSystem = require("systems/physic/SpawnSystem")
+local AngelControlSystem = require("src/systems/gameplay/AngelControlSystem")
+local DevilControlSystem = require("src/systems/gameplay/DevilControlSystem")
+local AsteroidSpawnSystem = require("src/systems/gameplay/AsteroidSpawnSystem")
+local CleanupSystem = require("src/systems/gameplay/CleanupSystem")
+local ParallaxSystem = require("src/systems/gameplay/ParallaxSystem")
+local SpawnSystem = require("src/systems/physic/SpawnSystem")
 
 -- Physics Systems
-local GravitySystem = require("systems/physic/GravitySystem")
-local CageSystem = require("systems/physic/CageSystem")
-local MaxVelocitySystem = require("systems/physic/MaxVelocitySystem")
+local GravitySystem = require("src/systems/physic/GravitySystem")
+local CageSystem = require("src/systems/physic/CageSystem")
+local MaxVelocitySystem = require("src/systems/physic/MaxVelocitySystem")
 
 -- Events
-local KeyPressed = require("events/KeyPressed")
+local KeyPressed = require("src/events/KeyPressed")
 
 -- State superclass
-local State = require("core/State")
+local State = require("src/core/State")
 local GameState = class("GameState", State)
 
 

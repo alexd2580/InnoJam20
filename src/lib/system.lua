@@ -1,4 +1,4 @@
-local json = require("lib/JSON")
+local json = require("src/lib/JSON")
 local system = {}
 
 function system.queryUrl(url)

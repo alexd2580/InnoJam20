@@ -1,5 +1,5 @@
 local GravitySystem = class("GravitySystem", System)
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 
 function GravitySystem:update(dt)
     local asteroids = stack:current().engine:getEntitiesWithComponent("Asteroid")

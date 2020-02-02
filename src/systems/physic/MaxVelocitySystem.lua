@@ -1,5 +1,5 @@
 local MaxVelocitySystem = class("MaxVelocitySystem", System)
-local Vector = require("helper/Vector")
+local Vector = require("src/helper/Vector")
 
 function MaxVelocitySystem:update(dt)
     for index, entity in pairs(self.targets) do

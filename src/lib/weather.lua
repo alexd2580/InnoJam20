@@ -1,5 +1,5 @@
-local system = require("lib/system")
-local apiKeys = require("lib/apiKeys")
+local system = require("src/lib/system")
+local apiKeys = require("src/lib/apiKeys")
 
 local weather = {}
 
