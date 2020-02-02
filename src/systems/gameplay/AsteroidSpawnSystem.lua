@@ -12,7 +12,7 @@ function AsteroidSpawnSystem:initialize()
     self.spawntime = 1
 end
 
-function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse, image)
+function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse, image, particleImage)
     local world = stack:current().world
     local engine = stack:current().engine
 
@@ -32,7 +32,9 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(Asteroid(size))
     asteroid:add(JustSpawned())
 
-    asteroid:add(Particle(image, 1000, Vector(0, 0), {2, 10}, 100))
+    if particleImage then
+        asteroid:add(Particle(particleImage, 1000, Vector(0, 0), {0.1, 1.5}, 100))
+    end
 
     engine:addEntity(asteroid)
     return asteroid
@@ -67,20 +69,23 @@ function AsteroidSpawnSystem:update(dt)
         motionVector = motionVector:multiply(velocity)
 
         local randomType = math.random(1, 3)
-        local image, type
+        local image, type, particleImage
         if randomType == 1 then
             image = resources.images.explodyboi
+            particleImage = resources.images.explodyparticle
             type = "explodiboy"
         elseif randomType == 2 then
             image = resources.images.stoneboi
+            particleImage = resources.images.explodyparticle
             type = "stoneboi"
         elseif randomType == 3 then
             image = resources.images.waterboi
+            particleImage = resources.images.explodyparticle
             type = "waterboi"
         end
 
         local size = math.random(15, 25)
-        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, nil, image)
+        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, nil, image, particleImage)
         asteroid:get("Asteroid").type = type
     end
 end

@@ -4,6 +4,7 @@ local Particle = Component.create("Particle")
 function Particle:initialize(image, maxParticles, offset, particlelife, emitterlife)
     self.particle = love.graphics.newParticleSystem(image, maxParticles)
     self.particle:setParticleLifetime(particlelife[1], particlelife[2])
+    self.particle:setEmissionRate(10)
     self.particle:start()
 
     self.offset = offset

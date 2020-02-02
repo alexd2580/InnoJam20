@@ -61,8 +61,6 @@ function GameState:spawnEarth()
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthRadius, false))
 
-    earth:add(Particle(resources.images.planet, 1000, Vector(100, 100), {2, 10}, 100))
-
     -- resize
 
     self.engine:addEntity(earth)
