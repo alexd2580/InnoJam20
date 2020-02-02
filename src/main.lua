@@ -55,9 +55,9 @@ function love.load()
     resources:addImage("waterboi", "data/img/water-asteroid.png")
     resources:addImage("explodyboi", "data/img/explody-boi.png")
     resources:addImage("deepfield", "data/img/bg.png")
+    resources:addImage("planet", "data/img/planet.png")
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
-    resources:addSprite("planet", "data/img/planet.png", 400, 400, 12)
 
     resources:load()
 

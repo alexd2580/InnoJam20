@@ -1,6 +1,6 @@
 local Vector = require("helper/Vector")
-local Asteroid, Body, Color, DrawableCircle, JustSpawned, SpawnMe = Component.load(
-    {"Asteroid", "Body", "Color", "DrawableCircle", "JustSpawned", "SpawnMe"}
+local Asteroid, Body, Color, DrawableCircle, Drawable, JustSpawned, SpawnMe = Component.load(
+    {"Asteroid", "Body", "Color", "DrawableCircle", "Drawable", "JustSpawned", "SpawnMe"}
 )
 
 local AsteroidSpawnSystem = class("AsteroidSpawnSystem", System)
@@ -11,7 +11,7 @@ function AsteroidSpawnSystem:initialize()
     self.spawntime = 1
 end
 
-function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse)
+function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse, image)
     local world = stack:current().world
     local engine = stack:current().engine
 
@@ -19,7 +19,7 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     local asteroid = Entity()
     asteroid:add(SpawnMe(size, position, motionVector, nil, impulse))
 
-    -- Add drawing stuff.
+    -- Add drawing stuff
     asteroid:add(DrawableCircle(size, true))
     asteroid:add(Color(255, 255, 0))
 
