@@ -61,6 +61,9 @@ function GameState:spawnEarth()
     earth:add(Color(0.2, 0.5, 0.2))
     earth:add(DrawableCircle(earthRadius, false))
 
+
+    resources.sounds.boom:setVolume(1.0)
+    resources.sounds.splash:setVolume(0.8)
     -- resize
 
     self.engine:addEntity(earth)
@@ -83,7 +86,7 @@ end
 
 
 function GameState:spawnAngel()
-    local startX, startY = 200, 200
+    local startX, startY = 100, 100
     local angel = self:buildBasePlayer(startX, startY, 0.8, 0.8, 0.8)
     angel:add(Angel())
     angel:add(DrawableSprite(resources.sprites.good, 1))
@@ -92,7 +95,7 @@ end
 
 
 function GameState:spawnDevil()
-    local startX, startY = 300, 300
+    local startX, startY = 1700, 980
     local devil = self:buildBasePlayer(startX, startY, 0.8, 0.2, 0.2)
     devil:add(Devil())
     devil:add(DrawableSprite(resources.sprites.bad, 1))
@@ -102,11 +105,14 @@ end
 
 function setEarthRadius(earth, newRadius)
     local body = earth:get("Body").body
-    if newRadius < 10 then
-        body:destroy()
-        stack:current().engine:removeEntity(earth)
-        -- print("Remove earth")
-        return false
+    print(newRadius)
+    if newRadius ~= newRadius or newRadius < 30 or newRadius > 150 then
+        stack:pop()
+        return
+        -- body:destroy()
+        -- stack:current().engine:removeEntity(earth)
+        -- -- print("Remove earth")
+        -- return false
     end
 
     local earthShape = body:getFixtures()[1]:getShape():setRadius(newRadius)
@@ -162,6 +168,8 @@ function GameState.handleAsteroidEarthCollision(
         -- Explode!
         local newRadius = math.sqrt((radius * radius * math.pi - 10 * asteroidArea) / math.pi)
         setEarthRadius(earth, newRadius)
+        resources.sounds.boom:stop()
+        resources.sounds.boom:play()
     end
 
     body:destroy()
@@ -195,8 +203,12 @@ function GameState.handleAsteroidEarthCollision(
                 newAsteroid:get("Asteroid").type = asteroidType
             end
         else
-            -- GROW
+           -- GROW
             local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
+            if asteroidType == "waterboi" then
+                resources.sounds.splash:stop()
+                resources.sounds.splash:play()
+            end
             setEarthRadius(earth, newRadius)
         end
     end
@@ -265,6 +277,7 @@ function GameState:load()
     self:spawnAngel()
     self:spawnDevil()
 
+    resources.music.background:setVolume(0.5)
     resources.music.background:isLooping(true)
     resources.music.background:play()
 end

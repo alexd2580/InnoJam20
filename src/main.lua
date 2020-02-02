@@ -60,6 +60,8 @@ function love.load()
     resources:addSprite("good", "data/img/good-player.png", 64, 64, 8)
     resources:addSprite("bad", "data/img/bad-player.png", 64, 64, 8)
     resources:addMusic("background", "data/sound/background.wav")
+    resources:addSound("boom", "data/sound/boom.wav")
+    resources:addSound("splash", "data/sound/splash.mp3")
     resources:load()
 
     stack = StackHelper()
