@@ -46,14 +46,18 @@ function GameState:spawnEarth()
     local earthSize = 150
     local startX, startY = 1920 / 2, 1080 / 2
     local position = Vector(startX, startY)
-    local drawable = Drawable(resources.images.planet, 1)
+    local drawable = Drawable(resources.images.planet, 1, 0.75, 0.75)
     earth:add(SpawnMe(earthSize, position, nil, 0.2))
     earth:add(Earth())
     earth:add(Caged(100, 100))
     earth:add(MaxVelocity(300))
     earth:add(Attracting(0.01, 400))
-    earth:add(ImagePosition(position))
     earth:add(drawable)
+    earth:add(Color(0.2, 0.5, 0.2))
+    earth:add(DrawableCircle(earthSize, false))
+
+    -- resize 
+
     self.engine:addEntity(earth)
 end
 
