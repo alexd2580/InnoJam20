@@ -204,13 +204,16 @@ function GameState.handleAsteroidEarthCollision(
                 )
                 newAsteroid:get("Asteroid").type = asteroidType
             end
+
+            if asteroidType == "waterboi" then
+                if asteroidRadius > 14 then
+                    resources.sounds.splash:stop()
+                    resources.sounds.splash:play()
+                end
+            end
         else
            -- GROW
             local newRadius = math.sqrt((radius * radius * math.pi + 10 * asteroidArea) / math.pi)
-            if asteroidType == "waterboi" then
-                resources.sounds.splash:stop()
-                resources.sounds.splash:play()
-            end
             setEarthRadius(earth, newRadius)
         end
     end
