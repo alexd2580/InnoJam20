@@ -20,8 +20,12 @@ function AsteroidSpawnSystem.spawnAsteroid(position, size, motionVector, impulse
     asteroid:add(SpawnMe(size, position, motionVector, nil, impulse))
 
     -- Add drawing stuff
-    asteroid:add(DrawableCircle(size, true))
+    asteroid:add(DrawableCircle(size, false))
     asteroid:add(Color(255, 255, 0))
+
+    -- Add image 
+    local drawable = Drawable(image, 3, size, size, 0.8*size, 0.8*size)
+    asteroid:add(drawable)
 
     asteroid:add(Asteroid(size))
     asteroid:add(JustSpawned())
@@ -58,7 +62,7 @@ function AsteroidSpawnSystem:update(dt)
         motionVector = motionVector:getUnit()
         motionVector = motionVector:multiply(velocity)
 
-        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, 20, motionVector)
+        local asteroid = AsteroidSpawnSystem.spawnAsteroid(position, 20, motionVector, nil, resources.images.explodyboi)
     end
 end
 

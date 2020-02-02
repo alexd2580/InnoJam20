@@ -171,7 +171,7 @@ function GameState.handleAsteroidEarthCollision(
         for i = 1, numShards do
             local randOffset = Vector(math.random(-5, 5), math.random(-5, 5))
             print(asteroidPosition.x, asteroidPosition.y, randOffset.x, randOffset.y, shardRadius, impulse.x, impulse.y)
-            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, nil, impulse)
+            AsteroidSpawnSystem.spawnAsteroid(asteroidPosition:add(randOffset), shardRadius, nil, impulse, resources.images.explodyboi)
         end
     else
         -- GROW
